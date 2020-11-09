@@ -1,7 +1,7 @@
 from unittest import TestCase
 import os
 
-from querido_diario.etl.file_transformation import get_text_from_file
+from querido_diario.etl.file_transformation import get_content_from_file
 
 
 class TextExtractionTests(TestCase):
