@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 import codecs
 import logging
 import magic
@@ -100,7 +100,9 @@ def is_file_type(filepath: str, file_types: List[str]) -> bool:
     return get_file_type(filepath) in file_types
 
 
-def write_metadata(filepath: str, apache_tika_jar: str) -> str:
+def write_data(
+        filepath: str, apache_tika_jar: str, metadata: Optional[str]=None
+    ) -> str:
     """
         Extract the metadata of the original file using the given Apache
         Tika jar file. Write text file and return its filepath.
@@ -108,30 +110,26 @@ def write_metadata(filepath: str, apache_tika_jar: str) -> str:
     if is_txt(filepath):
         return filepath
     else:
-        src_path, _ = os.path.splitext(filepath)
-        dest_path = src_path + ".json"
-        command = f"java -jar {apache_tika_jar} --metadata --json {filepath}"
-        logging.debug(command)
-        with open(dest_path, "w") as f:
-            subprocess.run(command, shell=True, check=True, stdout=f)
-        return dest_path
+        path_src, _ = os.path.splitext(filepath)
+        path_txt = path_src + ".txt"
+        path_json = path_src + ".json"
+        command = f'java -jar "{apache_tika_jar}"'
 
-def write_text(filepath: str, apache_tika_jar: str) -> str:
-    """
-        Extract the text from the given file using the given Apache Tika
-        jar file. Write text file and return its filepath
-    """
-    logging.debug(f"Extracting text from {filepath}")
-    if is_txt(filepath):
-        return filepath
-    else:
-        dest_path, _ = os.path.splitext(filepath)
-        dest_path = dest_path + ".txt"
-        command = f"java -jar {apache_tika_jar} --text {filepath}"
+        if metadata:
+            command += f' --metadata --json "{filepath}"'
+            path_dest = path_json
+        else:
+            command += f' --text "{filepath}"'
+            path_dest = path_txt
+
         logging.debug(command)
-        with open(dest_path, "w") as f:
-            subprocess.run(command, shell=True, check=True, stdout=f)
-        return dest_path
+
+        with open(path_dest, "w") as f:
+            subprocess.run(
+                command, shell=True, check=True, stdout=f,
+                stderr=subprocess.DEVNULL
+            )
+        return path_dest
 
 
 def get_content_from_file(filepath: str) -> str:
@@ -139,9 +137,11 @@ def get_content_from_file(filepath: str) -> str:
         Load content from file
     """
     try:
-        with codecs.open(filepath, encoding='utf-8') as fp:
+        with codecs.open(filepath) as fp:
             content = fp.read()
-    except:
-        with codecs.open(filepath, encoding='cp-1252') as fp:
+    except UnicodeError:
+        with codecs.open(filepath, encoding='cp1252') as fp:
             content = fp.read()
+    except Exception as e:
+        logging.error(e)
     return content
