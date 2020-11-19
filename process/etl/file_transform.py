@@ -11,15 +11,21 @@ def check_file_exists(filepath: str) -> None:
         Check if the file exists.
     """
     if not os.path.exists(filepath):
-        raise Exception(f"File does not exists: {filepath}")
+        raise Exception(f"File does not exist: {filepath}")
 
 
 def check_file_type_supported(filepath: str) -> None:
     """
         Check if Apache Tika can convert this type of file
     """
-    if not is_doc(filepath) and not is_pdf(filepath) and not is_txt(filepath):
-        raise Exception(f"Unsupported file type: {get_file_type(filepath)}")
+    file_supported = any((
+        is_doc(filepath), is_html(filepath), is_pdf(filepath),
+        is_txt(filepath), is_png(filepath), is_tiff(filepath),
+        is_jpeg(filepath)
+    ))
+
+    if not file_supported:
+        raise Exception(f'Unsupported file type: "{get_file_type(filepath)}"')
 
 
 def check_is_jar_file(filepath: str) -> None:
@@ -28,11 +34,12 @@ def check_is_jar_file(filepath: str) -> None:
     """
     if not is_jar(filepath):
         raise Exception(
-            f"Expected Apache Tika jar file {get_file_type(filepath)}"
+            f'Expected Apache Tika jar file but instead '
+            f'received "{get_file_type(filepath)}"'
         )
 
 
-def check_is_valid_apache_tika_jar(apache_tika_jar: str) -> None:
+def check_apache_tika_jar_is_valid(apache_tika_jar: str) -> None:
     """
         Verify if the given file is a valid Apache Tika jar file used to
         extract the text from files.
@@ -41,7 +48,7 @@ def check_is_valid_apache_tika_jar(apache_tika_jar: str) -> None:
     check_is_jar_file(apache_tika_jar)
 
 
-def check_is_valid_file_to_extract_text(filepath: str) -> None:
+def check_file_to_extract_text_is_valid(filepath: str) -> None:
     """
         Verify if the given file is a valid file to extract the text from.
     """
@@ -62,6 +69,20 @@ def is_doc(filepath: str) -> bool:
     return is_file_type(filepath, file_types)
 
 
+def is_html(filepath: str) -> bool:
+    """
+        If the file type is html, return True. Otherwise, return False.
+    """
+    return is_file_type(filepath, file_types=["text/html"])
+
+
+def is_json(filepath: str) -> bool:
+    """
+        If the file type is html, return True. Otherwise, return False.
+    """
+    return is_file_type(filepath, file_types=["application/json"])
+
+
 def is_jar(filepath: str) -> bool:
     """
         If the file type is jar, return True. Otherwise, return False.
@@ -69,11 +90,32 @@ def is_jar(filepath: str) -> bool:
     return is_file_type(filepath, file_types=["application/java-archive"])
 
 
+def is_jpeg(filepath: str) -> bool:
+    """
+        If the file type is jpeg, return True. Otherwise, return False.
+    """
+    return is_file_type(filepath, file_types=["image/jpeg"])
+
+
 def is_pdf(filepath: str) -> bool:
     """
         If the file type is pdf, return True. Otherwise, return False.
     """
     return is_file_type(filepath, file_types=["application/pdf"])
+
+
+def is_png(filepath: str) -> bool:
+    """
+        If the file type is png, return True. Otherwise, return False.
+    """
+    return is_file_type(filepath, file_types=["image/png"])
+
+
+def is_tiff(filepath: str) -> bool:
+    """
+        If the file type is tiff, return True. Otherwise, return False.
+    """
+    return is_file_type(filepath, file_types=["image/tiff"])
 
 
 def is_txt(filepath: str) -> bool:
@@ -100,8 +142,8 @@ def is_file_type(filepath: str, file_types: List[str]) -> bool:
     return get_file_type(filepath) in file_types
 
 
-def write_data(
-        filepath: str, apache_tika_jar: str, metadata: Optional[str]=None
+def write_file_content(
+      filepath: str, apache_tika_jar: str, metadata: Optional[bool]=None
     ) -> str:
     """
         Extract the metadata of the original file using the given Apache
@@ -110,38 +152,50 @@ def write_data(
     if is_txt(filepath):
         return filepath
     else:
+        check_file_to_extract_text_is_valid(filepath)
+        check_apache_tika_jar_is_valid(apache_tika_jar)
+
         path_src, _ = os.path.splitext(filepath)
-        path_txt = path_src + ".txt"
-        path_json = path_src + ".json"
-        command = f'java -jar "{apache_tika_jar}"'
+        command  = f'java -jar "{apache_tika_jar}" --encoding=UTF-8'
 
         if metadata:
             command += f' --metadata --json "{filepath}"'
-            path_dest = path_json
+            path_dest = path_src + ".json"
         else:
             command += f' --text "{filepath}"'
-            path_dest = path_txt
+            path_dest = path_src + ".txt"
 
         logging.debug(command)
 
         with open(path_dest, "w") as f:
-            subprocess.run(
+           subprocess.run(
                 command, shell=True, check=True, stdout=f,
                 stderr=subprocess.DEVNULL
             )
         return path_dest
 
 
-def get_content_from_file(filepath: str) -> str:
+def load_file_content(filepath: str) -> str:
     """
         Load content from file
     """
-    try:
-        with codecs.open(filepath) as fp:
-            content = fp.read()
-    except UnicodeError:
-        with codecs.open(filepath, encoding='cp1252') as fp:
-            content = fp.read()
-    except Exception as e:
-        logging.error(e)
-    return content
+    if is_txt(filepath):
+        try:
+            with codecs.open(filepath) as fp:
+                content = fp.read()
+            return content
+        except UnicodeError:
+            with codecs.open(filepath, encoding='cp1252') as fp:
+                content = fp.read()
+            return content
+        except Exception as e:
+            logging.error(e)
+            print(e)
+    elif is_json(filepath):
+        pass
+    else:
+        raise Exception((
+            f'Expected "text/plain" file type but instead '
+            f'received "{get_file_type(filepath)}"'
+        ))
+

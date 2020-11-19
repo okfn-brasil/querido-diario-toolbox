@@ -1,6 +1,8 @@
-from typing import List, Optional
+from typing import Optional
+import json
+import os
 
-from .etl.file_extract import *
+from .etl.file_transform import *
 
 
 class Gazette:
@@ -9,24 +11,47 @@ class Gazette:
         editions downloaded in project querido diário.
 
         Args:
-            filepaths: a list of gazette editions to process or read
+            filepath: a gazette edition to process or read. it takes
+                      precedence over content if both are specified.
             apache_tika_jar: a filepath pointing to the apache tika
                              installation.
-            metadata: a flag for extracting metadata rather than text
+            content: a processed content
 
     """
     def __init__(
-            self, filepaths: list, apache_tika_jar: Optional[str]=None,
-            texts: Optional[str]=None
+            self, filepath: Optional[str]=None,
+            apache_tika_jar: Optional[str]=None, content: Optional[str]=None
         ):
 
-        self.filepaths = filepaths
-        self.apache_tika_jar = apache_tika_jar
-        self.texts = texts
+        self.filepath = filepath
+        self.tika_jar = apache_tika_jar
+        self.content = content
 
-    def extract_content(self, metadata: Optional[str]=None) -> List[str]:
-        """ Extract gazette content and store as gazette text """
-        self.texts = extract_wrapper(
-            self.filepaths, self.apache_tika_jar, metadata
+        if self.filepath:
+            check_file_type_supported(self.filepath)
+            if not is_txt(self.filepath):
+                check_apache_tika_jar_is_valid(self.tika_jar)
+        else:
+            if not self.content:
+                raise Exception(
+                    "Either the filepath or content argument must be specified"
+                )
+
+    def extract_content(self, metadata: Optional[bool]=None) -> str:
+        """
+            Extract gazette content, save to disk, and store filepath
+            in filepath class content
+        """
+        self.filepath = write_file_content(
+            self.filepath, self.tika_jar, metadata
         )
 
+    def load_content(self) -> None:
+        """
+            Load gazette content and store in content class object
+        """
+        if is_json(self.filepath):
+            with open(self.filepath, 'r') as fp:
+                self.content = json.load(fp)
+        else:
+            self.content = load_file_content(self.filepath)
