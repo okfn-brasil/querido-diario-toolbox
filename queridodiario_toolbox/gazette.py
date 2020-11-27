@@ -37,13 +37,14 @@ class Gazette:
                     "Either the filepath or content argument must be specified"
                 )
 
-    def extract_content(self, metadata: Optional[bool]=None) -> str:
+    def extract_content(self, metadata: Optional[bool]=False) -> str:
         """
             Extract gazette content, save to disk, and store filepath
             in filepath class content
         """
         self.filepath = write_file_content(
-            self.filepath, self.tika_jar, metadata
+            filepath=self.filepath, apache_tika_jar=self.tika_jar,
+            metadata=metadata
         )
 
     def load_content(self) -> None:
@@ -54,4 +55,4 @@ class Gazette:
             with open(self.filepath, 'r') as fp:
                 self.content = json.load(fp)
         else:
-            self.content = load_file_content(self.filepath)
+            self.content = load_file_content(filepath=self.filepath)

@@ -1,13 +1,12 @@
 from unittest import TestCase
 import os
 
-from process.etl.file_transform import *
-from process import Gazette
+from queridodiario_toolbox.etl.file_transform import *
+from queridodiario_toolbox import Gazette
 
 class TextExtractionTests(TestCase):
 
-    # APACHE_TIKA_JAR_PATH = "/tika-app.jar"
-    TIKA_PATH = "/usr/local/Cellar/tika/1.24.1_1/libexec/tika-app-1.24.1.jar"
+    TIKA_PATH = "/tika-app.jar"
 
     def tearDown(self):
         self.clean_txt_file_generated_during_tests()
@@ -22,8 +21,25 @@ class TextExtractionTests(TestCase):
 
     def get_files_generated_during_tests(self, root, files):
         for f in files:
-            if ".txt" in f and f not in ["fake_content.txt", "fake_gazette.txt"]:
+            if ".txt" in f and f not in [
+                "fake_content.txt", "fake_gazette.txt"
+            ]:
                 yield f"{root}{f}"
+
+    def validate_basic_extract_content(self, gazette, metadata=False):
+        if metadata:
+            target = "tests/data/fake_gazette.json"
+        else:
+            target = "tests/data/fake_gazette.txt"
+
+        gazette.extract_content(metadata=metadata)
+        self.assertEqual(gazette.filepath, target)
+
+        gazette.load_content()
+        self.assertNotEqual(0, len(gazette.content))
+
+        if not metadata:
+            self.assertIn("Querido", gazette.content, "Extraction Failed")
 
     def test_extract_text_from_invalid_file(self):
         with self.assertRaisesRegex(Exception, "No such file"):
@@ -116,154 +132,66 @@ class TextExtractionTests(TestCase):
 
     def test_extract_text_from_doc_should_return_content(self):
         gazette = Gazette("tests/data/fake_gazette.doc", self.TIKA_PATH)
-
-        gazette.extract_content()
-        self.assertEqual(gazette.filepath, "tests/data/fake_gazette.txt")
-
-        gazette.load_content()
-        self.assertNotEqual(0, len(gazette.content))
-        self.assertIn("Querido", gazette.content, "Extraction Failed")
+        self.validate_basic_extract_content(gazette)
 
     def test_extract_text_from_docx_should_return_content(self):
         gazette = Gazette("tests/data/fake_gazette.docx", self.TIKA_PATH)
-
-        gazette.extract_content()
-        self.assertEqual(gazette.filepath, "tests/data/fake_gazette.txt")
-
-        gazette.load_content()
-        self.assertNotEqual(0, len(gazette.content))
-        self.assertIn("Querido", gazette.content, "Extraction Failed")
+        self.validate_basic_extract_content(gazette)
 
     def test_extract_text_from_odt_should_return_content(self):
         gazette = Gazette("tests/data/fake_gazette.odt", self.TIKA_PATH)
-
-        gazette.extract_content()
-        self.assertEqual(gazette.filepath, "tests/data/fake_gazette.txt")
-
-        gazette.load_content()
-        self.assertNotEqual(0, len(gazette.content))
-        self.assertIn("Querido", gazette.content, "Extraction Failed")
+        self.validate_basic_extract_content(gazette)
 
     def test_extract_text_from_html_should_return_content(self):
         gazette = Gazette("tests/data/fake_gazette.html", self.TIKA_PATH)
-
-        gazette.extract_content()
-        self.assertEqual(gazette.filepath, "tests/data/fake_gazette.txt")
-
-        gazette.load_content()
-        self.assertNotEqual(0, len(gazette.content))
-        self.assertIn("Querido", gazette.content, "Extraction Failed")
+        self.validate_basic_extract_content(gazette)
 
     def test_extract_text_from_pdf_should_return_content(self):
         gazette = Gazette("tests/data/fake_gazette.pdf", self.TIKA_PATH)
-
-        gazette.extract_content()
-        self.assertEqual(gazette.filepath, "tests/data/fake_gazette.txt")
-
-        gazette.load_content()
-        self.assertNotEqual(0, len(gazette.content))
-        self.assertIn("Querido", gazette.content, "Extraction Failed")
+        self.validate_basic_extract_content(gazette)
 
     def test_extract_text_from_jpeg_should_return_content(self):
         gazette = Gazette("tests/data/fake_gazette.jpeg", self.TIKA_PATH)
-
-        gazette.extract_content()
-        self.assertEqual(gazette.filepath, "tests/data/fake_gazette.txt")
-
-        gazette.load_content()
-        self.assertNotEqual(0, len(gazette.content))
-        self.assertIn("Querido", gazette.content, "Extraction Failed")
+        self.validate_basic_extract_content(gazette)
 
     def test_extract_text_from_png_should_return_content(self):
         gazette = Gazette("tests/data/fake_gazette.png", self.TIKA_PATH)
-
-        gazette.extract_content()
-        self.assertEqual(gazette.filepath, "tests/data/fake_gazette.txt")
-
-        gazette.load_content()
-        self.assertNotEqual(0, len(gazette.content))
-        self.assertIn("Querido", gazette.content, "Extraction Failed")
+        self.validate_basic_extract_content(gazette)
 
     def test_extract_text_from_tiff_should_return_content(self):
         gazette = Gazette("tests/data/fake_gazette.tiff", self.TIKA_PATH)
-
-        gazette.extract_content()
-        self.assertEqual(gazette.filepath, "tests/data/fake_gazette.txt")
-
-        gazette.load_content()
-        self.assertNotEqual(0, len(gazette.content))
-        self.assertIn("Querido", gazette.content, "Extraction Failed")
+        self.validate_basic_extract_content(gazette)
 
     def test_extract_metadata_from_doc_should_return_content(self):
         gazette = Gazette("tests/data/fake_gazette.doc", self.TIKA_PATH)
-
-        gazette.extract_content(metadata=True)
-        self.assertEqual(gazette.filepath, "tests/data/fake_gazette.json")
-
-        gazette.load_content()
-        self.assertNotEqual(0, len(gazette.content))
+        self.validate_basic_extract_content(gazette, metadata=True)
 
     def test_extract_metadata_from_docx_should_return_content(self):
         gazette = Gazette("tests/data/fake_gazette.docx", self.TIKA_PATH)
-
-        gazette.extract_content(metadata=True)
-        self.assertEqual(gazette.filepath, "tests/data/fake_gazette.json")
-
-        gazette.load_content()
-        self.assertNotEqual(0, len(gazette.content))
+        self.validate_basic_extract_content(gazette, metadata=True)
 
     def test_extract_metadata_from_odt_should_return_content(self):
         gazette = Gazette("tests/data/fake_gazette.odt", self.TIKA_PATH)
-
-        gazette.extract_content(metadata=True)
-        self.assertEqual(gazette.filepath, "tests/data/fake_gazette.json")
-
-        gazette.load_content()
-        self.assertNotEqual(0, len(gazette.content))
+        self.validate_basic_extract_content(gazette, metadata=True)
 
     def test_extract_metadata_from_html_should_return_content(self):
         gazette = Gazette("tests/data/fake_gazette.html", self.TIKA_PATH)
-
-        gazette.extract_content(metadata=True)
-        self.assertEqual(gazette.filepath, "tests/data/fake_gazette.json")
-
-        gazette.load_content()
-        self.assertNotEqual(0, len(gazette.content))
+        self.validate_basic_extract_content(gazette, metadata=True)
 
     def test_extract_metadata_from_pdf_should_return_content(self):
         gazette = Gazette("tests/data/fake_gazette.pdf", self.TIKA_PATH)
-
-        gazette.extract_content(metadata=True)
-        self.assertEqual(gazette.filepath, "tests/data/fake_gazette.json")
-
-        gazette.load_content()
-        self.assertNotEqual(0, len(gazette.content))
+        self.validate_basic_extract_content(gazette, metadata=True)
 
     def test_extract_metadata_from_jpeg_should_return_content(self):
         gazette = Gazette("tests/data/fake_gazette.jpeg", self.TIKA_PATH)
-
-        gazette.extract_content(metadata=True)
-        self.assertEqual(gazette.filepath, "tests/data/fake_gazette.json")
-
-        gazette.load_content()
-        self.assertNotEqual(0, len(gazette.content))
+        self.validate_basic_extract_content(gazette, metadata=True)
 
     def test_extract_metadata_from_png_should_return_content(self):
         gazette = Gazette("tests/data/fake_gazette.png", self.TIKA_PATH)
-
-        gazette.extract_content(metadata=True)
-        self.assertEqual(gazette.filepath, "tests/data/fake_gazette.json")
-
-        gazette.load_content()
-        self.assertNotEqual(0, len(gazette.content))
+        self.validate_basic_extract_content(gazette, metadata=True)
 
     def test_extract_metadata_from_tiff_should_return_content(self):
         gazette = Gazette("tests/data/fake_gazette.tiff", self.TIKA_PATH)
-
-        gazette.extract_content(metadata=True)
-        self.assertEqual(gazette.filepath, "tests/data/fake_gazette.json")
-
-        gazette.load_content()
-        self.assertNotEqual(0, len(gazette.content))
+        self.validate_basic_extract_content(gazette, metadata=True)
 
 

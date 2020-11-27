@@ -143,7 +143,7 @@ def is_file_type(filepath: str, file_types: List[str]) -> bool:
 
 
 def write_file_content(
-      filepath: str, apache_tika_jar: str, metadata: Optional[bool]=None
+      filepath: str, apache_tika_jar: str, metadata: Optional[bool]=False
     ) -> str:
     """
         Extract the metadata of the original file using the given Apache
