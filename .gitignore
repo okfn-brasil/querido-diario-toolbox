@@ -134,3 +134,5 @@ dmypy.json
 data/*
 *scratch/
 tests/text_extraction_tests_aassumpcao.py
+fake_gazette.json
+fake_gazette.txt
