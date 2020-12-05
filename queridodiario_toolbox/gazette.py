@@ -1,9 +1,9 @@
 from typing import Optional
+import configparser
 import json
 import os
 
 from .etl.file_transform import *
-
 
 class Gazette:
     """
@@ -37,7 +37,7 @@ class Gazette:
                     "Either the filepath or content argument must be specified"
                 )
 
-    def extract_content(self, metadata: Optional[bool]=False) -> str:
+    def extract_content(self, metadata: Optional[bool]=False) -> None:
         """
             Extract gazette content, save to disk, and store filepath
             in filepath class content
@@ -51,8 +51,10 @@ class Gazette:
         """
             Load gazette content and store in content class object
         """
-        if is_json(self.filepath):
-            with open(self.filepath, 'r') as fp:
-                self.content = json.load(fp)
-        else:
-            self.content = load_file_content(filepath=self.filepath)
+        self.content = load_file_content(filepath=self.filepath)
+
+    def process_text(self) -> str:
+        """
+            Process gazette text and return linearized text
+        """
+        pass

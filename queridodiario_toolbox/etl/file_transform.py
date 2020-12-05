@@ -1,5 +1,6 @@
 from typing import List, Optional
 import codecs
+import json
 import logging
 import magic
 import os
@@ -20,8 +21,8 @@ def check_file_type_supported(filepath: str) -> None:
     """
     file_supported = any((
         is_doc(filepath), is_html(filepath), is_pdf(filepath),
-        is_txt(filepath), is_png(filepath), is_tiff(filepath),
-        is_jpeg(filepath)
+        is_txt(filepath), is_rtf(filepath), is_png(filepath),
+        is_tiff(filepath), is_jpeg(filepath)
     ))
 
     if not file_supported:
@@ -62,9 +63,11 @@ def is_doc(filepath: str) -> bool:
         return False.
     """
     file_types = [
-        "application/msword",
-        "application/vnd.oasis.opendocument.text",
-        "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        f"application/{ext}" for ext in [
+            "msword", "vnd.oasis.opendocument.text",
+            "vnd.openxmlformats-officedocument.wordprocessingml.document",
+            "octet-stream"
+        ]
     ]
     return is_file_type(filepath, file_types)
 
@@ -111,6 +114,13 @@ def is_png(filepath: str) -> bool:
     return is_file_type(filepath, file_types=["image/png"])
 
 
+def is_rtf(filepath: str) -> bool:
+    """
+        If the file type is rtf, return True. Otherwise, return False.
+    """
+    return is_file_type(filepath, file_types=["application/rtf", "text/rtf"])
+
+
 def is_tiff(filepath: str) -> bool:
     """
         If the file type is tiff, return True. Otherwise, return False.
@@ -122,7 +132,7 @@ def is_txt(filepath: str) -> bool:
     """
         If the file type is txt return True. Otherwise, return False.
     """
-    return is_file_type(filepath, file_types=["text/plain"])
+    return is_file_type(filepath, file_types=["text/plain", "text/x-Algol68"])
 
 
 def get_file_type(filepath: str) -> str:
@@ -192,7 +202,9 @@ def load_file_content(filepath: str) -> str:
             logging.error(e)
             print(e)
     elif is_json(filepath):
-        pass
+        with open(filepath, 'r') as fp:
+            content = json.load(fp)
+        return content
     else:
         raise Exception((
             f'Expected "text/plain" file type but instead '

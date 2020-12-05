@@ -134,3 +134,4 @@ dmypy.json
 data/*
 *scratch/
 tests/text_extraction_tests_aassumpcao.py
+queridodiario_toolbox/process/*
