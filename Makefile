@@ -2,6 +2,7 @@ IMAGE_NAMESPACE ?= serenata
 IMAGE_NAME ?= querido-diario-toolbox
 IMAGE_TAG ?= latest
 POD_NAME ?= querido-diario-toolbox-testing
+BIN_DIR ?= $(PWD)/bin
 
 
 run-command=(podman run --rm -ti \
@@ -56,3 +57,12 @@ coverage: create-pod
 	$(call run-command, coverage erase)
 	$(call run-command, coverage run -m unittest tests)
 	$(call run-command, coverage report -m)
+
+.PHONY: download-binaries
+download-binaries:
+	#wget https://github.com/tabulapdf/tabula-java/releases/download/v1.0.4/tabula-1.0.4-jar-with-dependencies.jar
+	mkdir -p $(BIN_DIR)
+	curl -o $(BIN_DIR)/tika-app-1.24.jar  http://archive.apache.org/dist/tika/tika-app-1.24.jar
+
+.PHONY: setup
+setup: download-binaries build
