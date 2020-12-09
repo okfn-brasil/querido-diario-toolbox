@@ -4,6 +4,7 @@ import json
 import os
 
 from .etl.file_transform import *
+from .process.text_process import *
 
 class Gazette:
     """
@@ -15,12 +16,13 @@ class Gazette:
                       precedence over content if both are specified.
             apache_tika_jar: a filepath pointing to the apache tika
                              installation.
-            content: a processed content
+            content: a processed content.
 
     """
     def __init__(
             self, filepath: Optional[str]=None,
-            apache_tika_jar: Optional[str]=None, content: Optional[str]=None
+            apache_tika_jar: Optional[str]=None,
+            content: Optional[str]=None
         ):
 
         self.filepath = filepath
@@ -57,4 +59,19 @@ class Gazette:
         """
             Process gazette text and return linearized text
         """
-        pass
+        if isinstance(self.content, dict):
+            raise TypeError('str expected, not dict')
+        else:
+            text = remove_breaks(self.content)
+            text = remove_duplicate_punctuation(text)
+            return text
+
+class Page(Gazette):
+
+    pass
+    # def extract_table(
+    #     page: str, tabula_jar: str, first_word: str, last_word: str
+    # ) ->  str:
+    #     page = execute_tabula_on_page(page, tabula_jar)
+    #     table = extract_table(page, first_word, last_word)
+    #     return table

@@ -2,29 +2,38 @@ from unittest import TestCase
 import os
 
 from queridodiario_toolbox.etl.file_transform import *
+from queridodiario_toolbox.process import *
+
 from queridodiario_toolbox import Gazette
 
 class TextExtractionTests(TestCase):
 
-    TIKA_PATH = "/tika-app.jar"
+    def setUp(self):
+        ROOT = "queridodiario_toolbox/bin"
+        self.TIKA_PATH = ROOT + "/tika-app-1.24.1.jar"
+        self.TABULA_PATH = ROOT + "/tabula-1.0.4-jar-with-dependencies.jar"
 
     def tearDown(self):
         self.clean_txt_file_generated_during_tests()
 
+    # definition of helper functions
     def clean_txt_file_generated_during_tests(self):
         for root, dirs, files in os.walk("tests/data/"):
             for generated_file in self.get_files_generated_during_tests(
                 root, files
             ):
-                print(f"{generated_file}")
                 os.remove(generated_file)
 
     def get_files_generated_during_tests(self, root, files):
         for f in files:
-            if ".txt" in f and f not in [
-                "fake_content.txt", "fake_gazette.txt"
-            ]:
+            if f in ["fake_gazette.txt"]:
                 yield f"{root}{f}"
+
+    def process_gazette_text(self, filepath):
+        gazette = Gazette(filepath=filepath)
+        gazette.load_content()
+        text = gazette.process_text()
+        return text
 
     def validate_basic_extract_content(self, gazette, metadata=False):
         if metadata:
@@ -38,9 +47,13 @@ class TextExtractionTests(TestCase):
         gazette.load_content()
         self.assertNotEqual(0, len(gazette.content))
 
-        if not metadata:
+        if metadata:
+            self.assertIsInstance(gazette.content, dict)
+            self.assertNotEqual(gazette.content.items(), None)
+        else:
             self.assertIn("Querido", gazette.content, "Extraction Failed")
 
+    # filetype tests
     def test_extract_text_from_invalid_file(self):
         with self.assertRaisesRegex(Exception, "No such file"):
             gazette = Gazette("file/does/not/exist", self.TIKA_PATH)
@@ -85,6 +98,7 @@ class TextExtractionTests(TestCase):
             gazette = Gazette("tests/data/fake_gazette.m4a", self.TIKA_PATH)
             gazette.extract_content(metadata=True)
 
+    # class instantiation tests
     def test_empty_class_instantiation_should_fail(self):
         with self.assertRaises(Exception):
             Gazette()
@@ -98,7 +112,7 @@ class TextExtractionTests(TestCase):
             gazette = Gazette(apache_tika_jar=self.TIKA_PATH)
 
     def test_class_instantiation_with_content(self):
-        gazette = Gazette(content="tests/data/fake_gazette.txt")
+        gazette = Gazette(content="tests/data/fake_content.txt")
         self.assertNotEqual(gazette.content, None)
 
     def test_class_instantiation_with_no_content(self):
@@ -113,7 +127,7 @@ class TextExtractionTests(TestCase):
     def test_class_instantiation_with_no_filepath(self):
         gazette = Gazette(
             apache_tika_jar=self.TIKA_PATH,
-            content="tests/data/fake_gazette.txt"
+            content="tests/data/fake_content.txt"
         )
         self.assertEqual(gazette.filepath, None)
         self.assertNotEqual(gazette.tika_jar, None)
@@ -123,13 +137,13 @@ class TextExtractionTests(TestCase):
         gazette = Gazette(
             filepath="tests/data/fake_gazette.pdf",
             apache_tika_jar=self.TIKA_PATH,
-            content="tests/data/fake_gazette.txt"
+            content="tests/data/fake_content.txt"
         )
         self.assertNotEqual(gazette.filepath, None)
         self.assertNotEqual(gazette.tika_jar, None)
         self.assertNotEqual(gazette.content, None)
 
-
+    # content extraction tests
     def test_extract_text_from_doc_should_return_content(self):
         gazette = Gazette("tests/data/fake_gazette.doc", self.TIKA_PATH)
         self.validate_basic_extract_content(gazette)
@@ -162,6 +176,7 @@ class TextExtractionTests(TestCase):
         gazette = Gazette("tests/data/fake_gazette.tiff", self.TIKA_PATH)
         self.validate_basic_extract_content(gazette)
 
+    # metadata extraction tests
     def test_extract_metadata_from_doc_should_return_content(self):
         gazette = Gazette("tests/data/fake_gazette.doc", self.TIKA_PATH)
         self.validate_basic_extract_content(gazette, metadata=True)
@@ -194,4 +209,11 @@ class TextExtractionTests(TestCase):
         gazette = Gazette("tests/data/fake_gazette.tiff", self.TIKA_PATH)
         self.validate_basic_extract_content(gazette, metadata=True)
 
+    # text linearization tests
+    def test_gazette_text_is_linearized(self):
+        gazette = Gazette("tests/data/multiple_columns.pdf", self.TIKA_PATH)
+        gazette.extract_content()
+        gazette.load_content()
+        text = gazette.process_text()
+        self.assertNotIn("-\n", text, "Text Processing Failed")
 

@@ -159,15 +159,15 @@ def write_file_content(
         Extract the metadata of the original file using the given Apache
         Tika jar file. Write text file and return its filepath.
     """
+    check_file_to_extract_text_is_valid(filepath)
+    check_apache_tika_jar_is_valid(apache_tika_jar)
+
+    path_src, _ = os.path.splitext(filepath)
+    command  = f'java -jar "{apache_tika_jar}" --encoding=UTF-8'
+
     if is_txt(filepath):
         return filepath
     else:
-        check_file_to_extract_text_is_valid(filepath)
-        check_apache_tika_jar_is_valid(apache_tika_jar)
-
-        path_src, _ = os.path.splitext(filepath)
-        command  = f'java -jar "{apache_tika_jar}" --encoding=UTF-8'
-
         if metadata:
             command += f' --metadata --json "{filepath}"'
             path_dest = path_src + ".json"
@@ -210,4 +210,3 @@ def load_file_content(filepath: str) -> str:
             f'Expected "text/plain" file type but instead '
             f'received "{get_file_type(filepath)}"'
         ))
-
