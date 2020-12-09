@@ -26,7 +26,10 @@ class TextExtractionTests(TestCase):
 
     def get_files_generated_during_tests(self, root, files):
         for f in files:
-            if f in ["fake_gazette.txt"]:
+            if f in [
+                "fake_gazette.txt", "multiple_columns.txt",
+                "multiple_columns.json"
+            ]:
                 yield f"{root}{f}"
 
     def process_gazette_text(self, filepath):
