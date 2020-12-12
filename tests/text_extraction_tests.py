@@ -9,7 +9,7 @@ from queridodiario_toolbox import Gazette
 class TextExtractionTests(TestCase):
 
     def setUp(self):
-        ROOT = "queridodiario_toolbox/bin"
+        ROOT = "tests/bin"
         self.TIKA_PATH = ROOT + "/tika-app-1.24.1.jar"
         self.TABULA_PATH = ROOT + "/tabula-1.0.4-jar-with-dependencies.jar"
 
