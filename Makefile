@@ -21,14 +21,14 @@ setup: pyenv install-deps download-binaries
 
 .PHONY: black
 black:
-	$(call run-python-venv, black $(PWD))
+	$(call run-python-venv, black $(PWD)) -l 79
 
 .PHONY: test
 test:
 	$(call run-python-venv, python -m unittest -f tests)
 
 .PHONY: coverage
-coverage: 
+coverage:
 	$(call run-python-venv, coverage erase)
 	$(call run-python-venv, coverage run -m unittest tests)
 	$(call run-python-venv, coverage report -m)

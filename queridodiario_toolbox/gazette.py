@@ -1,10 +1,8 @@
 from typing import Optional
-import configparser
-import json
-import os
 
 from .etl.file_transform import *
 from .process.text_process import *
+
 
 class Gazette:
     """
@@ -12,18 +10,21 @@ class Gazette:
         editions downloaded in project querido diário.
 
         Args:
-            filepath: a gazette edition to process or read. it takes
-                      precedence over content if both are specified.
+            filepath:        a gazette edition to process or read. it
+                             takes precedence over content if both are
+                             specified.
             apache_tika_jar: a filepath pointing to the apache tika
                              installation.
-            content: a processed content.
+            content:         a processed content.
 
     """
+
     def __init__(
-            self, filepath: Optional[str]=None,
-            apache_tika_jar: Optional[str]=None,
-            content: Optional[str]=None
-        ):
+        self,
+        filepath: Optional[str] = None,
+        apache_tika_jar: Optional[str] = None,
+        content: Optional[str] = None,
+    ):
 
         self.filepath = filepath
         self.tika_jar = apache_tika_jar
@@ -39,14 +40,15 @@ class Gazette:
                     "Either the filepath or content argument must be specified"
                 )
 
-    def extract_content(self, metadata: Optional[bool]=False) -> None:
+    def extract_content(self, metadata: Optional[bool] = False) -> None:
         """
             Extract gazette content, save to disk, and store filepath
             in filepath class content
         """
         self.filepath = write_file_content(
-            filepath=self.filepath, apache_tika_jar=self.tika_jar,
-            metadata=metadata
+            filepath=self.filepath,
+            apache_tika_jar=self.tika_jar,
+            metadata=metadata,
         )
 
     def load_content(self) -> None:
@@ -60,18 +62,8 @@ class Gazette:
             Process gazette text and return linearized text
         """
         if isinstance(self.content, dict):
-            raise TypeError('str expected, not dict')
+            raise TypeError("str expected, not dict")
         else:
             text = remove_breaks(self.content)
             text = remove_duplicate_punctuation(text)
             return text
-
-class Page(Gazette):
-
-    pass
-    # def extract_table(
-    #     page: str, tabula_jar: str, first_word: str, last_word: str
-    # ) ->  str:
-    #     page = execute_tabula_on_page(page, tabula_jar)
-    #     table = extract_table(page, first_word, last_word)
-    #     return table

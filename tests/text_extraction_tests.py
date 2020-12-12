@@ -5,9 +5,10 @@ from queridodiario_toolbox.etl.file_transform import *
 from queridodiario_toolbox.process import *
 
 from queridodiario_toolbox import Gazette
+from queridodiario_toolbox import Page
+
 
 class TextExtractionTests(TestCase):
-
     def setUp(self):
         ROOT = "tests/bin"
         self.TIKA_PATH = ROOT + "/tika-app-1.24.1.jar"
@@ -27,8 +28,9 @@ class TextExtractionTests(TestCase):
     def get_files_generated_during_tests(self, root, files):
         for f in files:
             if f in [
-                "fake_gazette.txt", "multiple_columns.txt",
-                "multiple_columns.json"
+                "fake_gazette.txt",
+                "multiple_columns.txt",
+                "multiple_columns.json",
             ]:
                 yield f"{root}{f}"
 
@@ -121,7 +123,7 @@ class TextExtractionTests(TestCase):
     def test_class_instantiation_with_no_content(self):
         gazette = Gazette(
             filepath="tests/data/fake_gazette.pdf",
-            apache_tika_jar=self.TIKA_PATH
+            apache_tika_jar=self.TIKA_PATH,
         )
         self.assertNotEqual(gazette.filepath, None)
         self.assertNotEqual(gazette.tika_jar, None)
@@ -130,7 +132,7 @@ class TextExtractionTests(TestCase):
     def test_class_instantiation_with_no_filepath(self):
         gazette = Gazette(
             apache_tika_jar=self.TIKA_PATH,
-            content="tests/data/fake_content.txt"
+            content="tests/data/fake_content.txt",
         )
         self.assertEqual(gazette.filepath, None)
         self.assertNotEqual(gazette.tika_jar, None)
@@ -140,7 +142,7 @@ class TextExtractionTests(TestCase):
         gazette = Gazette(
             filepath="tests/data/fake_gazette.pdf",
             apache_tika_jar=self.TIKA_PATH,
-            content="tests/data/fake_content.txt"
+            content="tests/data/fake_content.txt",
         )
         self.assertNotEqual(gazette.filepath, None)
         self.assertNotEqual(gazette.tika_jar, None)
@@ -212,7 +214,8 @@ class TextExtractionTests(TestCase):
         gazette = Gazette("tests/data/fake_gazette.tiff", self.TIKA_PATH)
         self.validate_basic_extract_content(gazette, metadata=True)
 
-    # text linearization tests
+        # text linearization tests
+
     def test_gazette_text_is_linearized(self):
         gazette = Gazette("tests/data/multiple_columns.pdf", self.TIKA_PATH)
         gazette.extract_content()
@@ -220,3 +223,22 @@ class TextExtractionTests(TestCase):
         text = gazette.process_text()
         self.assertNotIn("-\n", text, "Text Processing Failed")
 
+    # table extraction tests
+    def test_class_instantiation_with_no_tabula_path_should_fail(self):
+        with self.assertRaises(Exception):
+            page = Page(filepath="tests/data/fake_table.pdf")
+
+    def test_page_table_has_been_extracted(self):
+        page = Page(
+            filepath="tests/data/fake_table.pdf",
+            apache_tika_jar=self.TIKA_PATH,
+            tabula_jar=self.TABULA_PATH,
+        )
+        content = page.extract_table()
+
+        table = content.split("\r\n")
+        table = filter(None, table)
+        matrix = [row.split(",") for row in table]
+
+        matrix_size = [len(element) for element in matrix]
+        self.assertEqual(matrix_size, [2, 2])
