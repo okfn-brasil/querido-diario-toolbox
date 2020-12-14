@@ -1,7 +1,8 @@
-from typing import Optional
+from typing import Optional, Sequence
 
 from .etl.file_transform import *
 from .process.text_process import *
+from .process.edition_process import *
 
 
 class Gazette:
@@ -57,7 +58,7 @@ class Gazette:
         """
         self.content = load_file_content(filepath=self.filepath)
 
-    def process_text(self) -> str:
+    def process_text(self, store_text: Optional[bool] = False) -> str:
         """
             Process gazette text and return linearized text
         """
@@ -66,4 +67,39 @@ class Gazette:
         else:
             text = remove_breaks(self.content)
             text = remove_duplicate_punctuation(text)
-            return text
+            if store_text:
+                self.content = text
+            else:
+                return text
+
+    @staticmethod
+    def scan_cpf(text, validate: Optional[bool] = False) -> Sequence[str]:
+        """
+            Scan for cpfs and validate cpfs them if required by user.
+        """
+        cpfs = scan_individual_identifiers(text)
+
+        if validate:
+            cpfs = [
+                cpf for cpf in cpfs if validate_individual_identifiers(cpf)
+            ]
+
+        if cpfs:
+            return set(cpfs)
+
+    @staticmethod
+    def scan_cnpj(text, validate: Optional[bool] = False) -> Sequence[str]:
+        """
+            Scan for cnpjs and validate cpfs them if required by user.
+        """
+        cnpjs = scan_individual_identifiers(text, cpf=False)
+
+        if validate:
+            cnpjs = [
+                cnpj
+                for cnpj in cnpjs
+                if validate_individual_identifiers(cnpj, cpf=False)
+            ]
+
+        if cnpjs:
+            return set(cnpjs)

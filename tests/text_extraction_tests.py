@@ -29,13 +29,15 @@ class TextExtractionTests(TestCase):
         for f in files:
             if f in [
                 "fake_gazette.txt",
+                "fake_cpf_cnpj.txt",
                 "multiple_columns.txt",
                 "multiple_columns.json",
             ]:
                 yield f"{root}{f}"
 
     def process_gazette_text(self, filepath):
-        gazette = Gazette(filepath=filepath)
+        gazette = Gazette(filepath=filepath, apache_tika_jar=self.TIKA_PATH)
+        gazette.extract_content()
         gazette.load_content()
         text = gazette.process_text()
         return text
@@ -214,8 +216,7 @@ class TextExtractionTests(TestCase):
         gazette = Gazette("tests/data/fake_gazette.tiff", self.TIKA_PATH)
         self.validate_basic_extract_content(gazette, metadata=True)
 
-        # text linearization tests
-
+    # text linearization tests
     def test_gazette_text_is_linearized(self):
         gazette = Gazette("tests/data/multiple_columns.pdf", self.TIKA_PATH)
         gazette.extract_content()
@@ -242,3 +243,24 @@ class TextExtractionTests(TestCase):
 
         matrix_size = [len(element) for element in matrix]
         self.assertEqual(matrix_size, [2, 2])
+
+    # cpf and cnpj extraction tests
+    def test_cpf_has_been_extracted(self):
+        text = self.process_gazette_text("tests/data/fake_cpf_cnpj.pdf")
+        cpfs = Gazette.scan_cpf(text)
+        self.assertEqual(len(cpfs), 6)
+
+    def test_cnpj_has_been_extracted(self):
+        text = self.process_gazette_text("tests/data/fake_cpf_cnpj.pdf")
+        cnpj = Gazette.scan_cnpj(text)
+        self.assertIsNotNone(len(cnpj), 4)
+
+    def test_cpf_has_been_validated(self):
+        text = self.process_gazette_text("tests/data/fake_cpf_cnpj.pdf")
+        cpfs = Gazette.scan_cpf(text, validate=True)
+        self.assertEqual(len(cpfs), 4)
+
+    def test_cnpj_has_been_validated(self):
+        text = self.process_gazette_text("tests/data/fake_cpf_cnpj.pdf")
+        cnpj = Gazette.scan_cnpj(text, validate=True)
+        self.assertEqual(len(cnpj), 3)
