@@ -2,7 +2,7 @@
 __pycache__/
 *.py[cod]
 *$py.class
-
+.DS_Store
 # C extensions
 *.so
 
@@ -38,7 +38,7 @@ pip-log.txt
 pip-delete-this-directory.txt
 
 # Unit test / coverage reports
-htmlcov/
+# htmlcov/
 .tox/
 .nox/
 .coverage
@@ -127,3 +127,14 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+
+# local files
+*misc/
+data/*
+*scratch/
+tests/text_extraction_tests_aassumpcao.py
+fake_gazette.json
+fake_gazette.txt
+
+tests/bin
