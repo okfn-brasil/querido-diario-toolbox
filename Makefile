@@ -1,5 +1,6 @@
 BIN_DIR ?= $(PWD)/tests/bin
 PYTHON_VENV ?= $(PWD)/.venv
+BUILD_ROOT ?= $(PWD)/build
 
 run-python-venv=(. $(PYTHON_VENV)/bin/activate && $1)
 
@@ -33,3 +34,8 @@ coverage:
 	$(call run-python-venv, coverage run -m unittest tests)
 	$(call run-python-venv, coverage report -m)
 
+
+.PHONY: build
+build:
+	mkdir -p $(BUILD_ROOT)
+	python3 setup.py install --root=$(BUILD_ROOT) --prefix=/usr
