@@ -17,7 +17,7 @@ jobs:
         uses: actions/checkout@master
 
       - name: Install tesseract ocr to allow Apache Tika to extract info from images
-        run: apt-get install tesseract-ocr-por
+        run: sudo apt-get install tesseract-ocr-por
 
       - name: Setup test environment
         run: |
