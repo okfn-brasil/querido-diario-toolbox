@@ -108,7 +108,9 @@ def is_jar(filepath: str) -> bool:
     """
         If the file type is jar, return True. Otherwise, return False.
     """
-    return is_file_type(filepath, file_types=["application/java-archive"])
+    return is_file_type(
+        filepath, file_types=["application/java-archive", "application/zip"]
+    )
 
 
 def is_jpeg(filepath: str) -> bool:
