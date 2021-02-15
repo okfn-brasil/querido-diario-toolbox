@@ -13,15 +13,15 @@ install-deps:
 .PHONY: download-binaries
 download-binaries:
 	mkdir -p $(BIN_DIR)
-	cd $(BIN_DIR) && curl -O https://github.com/tabulapdf/tabula-java/releases/download/v1.0.4/tabula-1.0.4-jar-with-dependencies.jar
-	cd $(BIN_DIR) && curl -O http://archive.apache.org/dist/tika/tika-app-1.24.1.jar
+	cd $(BIN_DIR) && curl -L -O https://github.com/tabulapdf/tabula-java/releases/download/v1.0.4/tabula-1.0.4-jar-with-dependencies.jar
+	cd $(BIN_DIR) && curl -L -O http://archive.apache.org/dist/tika/tika-app-1.24.1.jar
 
 .PHONY: setup
 setup: pyenv install-deps download-binaries
 
 .PHONY: black
 black:
-	$(call run-python-venv, black $(PWD)) -l 79
+	$(call run-python-venv, black $(PWD) -l 79) 
 
 .PHONY: test
 test:
