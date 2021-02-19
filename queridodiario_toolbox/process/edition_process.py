@@ -2,19 +2,6 @@ from typing import List, Optional
 import re
 
 
-# edition methods
-def _is_a_single_municipality():
-    pass
-
-
-def split_pages():
-    pass
-
-
-def split_sections():
-    pass
-
-
 def calculate_id_digit(numbers, weights):
     """
         Calculation validation digits for cpf and cnpj for
@@ -62,7 +49,3 @@ def validate_individual_identifiers(identifier: str, cpf: bool = True) -> bool:
         check = calculate_id_digit(numbers=check, weights=CNPJ_WEIGHTS)
 
     return identifier == check
-
-
-def extract_procurement():
-    pass
