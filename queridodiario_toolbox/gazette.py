@@ -30,11 +30,12 @@ class Gazette:
         self.filepath = filepath
         self.tika_jar = apache_tika_jar
         self.content = content
+        self.content_file = None
+        self.metadata_file = None
+        self.metadata = None
 
         if self.filepath:
             check_file_type_supported(self.filepath)
-            if not is_txt(self.filepath):
-                check_apache_tika_jar_is_valid(self.tika_jar)
         else:
             if not self.content:
                 raise Exception(
