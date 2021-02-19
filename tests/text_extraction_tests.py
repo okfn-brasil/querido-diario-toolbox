@@ -1,11 +1,9 @@
-from unittest import TestCase
 import os
+from unittest import TestCase
 
+from queridodiario_toolbox import Gazette, Page
 from queridodiario_toolbox.etl.file_transform import *
 from queridodiario_toolbox.process import *
-
-from queridodiario_toolbox import Gazette
-from queridodiario_toolbox import Page
 
 
 class TextExtractionTests(TestCase):
@@ -109,10 +107,6 @@ class TextExtractionTests(TestCase):
     def test_empty_class_instantiation_should_fail(self):
         with self.assertRaises(Exception):
             Gazette()
-
-    def test_class_instantiation_with_filepath_but_no_tika_path(self):
-        with self.assertRaises(Exception):
-            gazette = Gazette(filepath="tests/data/fake_gazette.pdf")
 
     def test_class_instantiation_with_tika_path_but_no_filepath(self):
         with self.assertRaises(Exception):
@@ -223,11 +217,6 @@ class TextExtractionTests(TestCase):
         gazette.load_content()
         text = gazette.process_text()
         self.assertNotIn("-\n", text, "Text Processing Failed")
-
-    # table extraction tests
-    def test_class_instantiation_with_no_tabula_path_should_fail(self):
-        with self.assertRaises(Exception):
-            page = Page(filepath="tests/data/fake_table.pdf")
 
     def test_page_table_has_been_extracted(self):
         page = Page(

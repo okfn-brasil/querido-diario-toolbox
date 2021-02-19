@@ -1,8 +1,8 @@
 from typing import Optional, Sequence
 
 from .etl.file_transform import *
-from .process.text_process import *
 from .process.edition_process import *
+from .process.text_process import *
 
 
 class Gazette:

@@ -1,12 +1,9 @@
-import tempfile
-import os
 import json
+import os
+import tempfile
 from unittest import TestCase
 
-from queridodiario_toolbox.etl.file_transform import (
-    is_json,
-    has_suffix_in_name,
-)
+from queridodiario_toolbox.etl.file_transform import has_suffix_in_name, is_json
 
 
 class TextExtractionTests(TestCase):
