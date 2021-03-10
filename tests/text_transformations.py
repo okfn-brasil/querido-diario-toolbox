@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from queridodiario_toolbox.process.text_process import remove_breaks
+from queridodiario_toolbox.process.text_process import remove_breaks, remove_duplicate_punctuation
 
 class TextTransformationTests(TestCase):
 
@@ -29,3 +29,7 @@ class TextTransformationTests(TestCase):
         self.assertEqual(new_text, "Test Test")
         new_text = remove_breaks("Test-\nTest")
         self.assertEqual(new_text, "TestTest")
+
+    def test_remove_duplicate_punctuation(self):
+        new_text = remove_duplicate_punctuation("Test..Test")
+        self.assertEqual(new_text, "Test.Test")
