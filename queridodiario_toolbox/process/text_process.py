@@ -14,7 +14,7 @@ def remove_breaks(text: str) -> str:
     return text
 
 
-def _remove_new_line_splitting_word(text:str) -> str:
+def _remove_new_line_splitting_word(text: str) -> str:
     """ Removes new lines splitting words."""
     return re.sub(r"(\w)-(\n|\r){1,2}(\w)", r"\1\3", text)
 
