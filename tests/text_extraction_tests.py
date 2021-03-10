@@ -232,24 +232,3 @@ class TextExtractionTests(TestCase):
 
         matrix_size = [len(element) for element in matrix]
         self.assertEqual(matrix_size, [2, 2])
-
-    # cpf and cnpj extraction tests
-    def test_cpf_has_been_extracted(self):
-        text = self.process_gazette_text("tests/data/fake_cpf_cnpj.pdf")
-        cpfs = Gazette.scan_cpf(text)
-        self.assertEqual(len(cpfs), 6)
-
-    def test_cnpj_has_been_extracted(self):
-        text = self.process_gazette_text("tests/data/fake_cpf_cnpj.pdf")
-        cnpj = Gazette.scan_cnpj(text)
-        self.assertIsNotNone(len(cnpj), 4)
-
-    def test_cpf_has_been_validated(self):
-        text = self.process_gazette_text("tests/data/fake_cpf_cnpj.pdf")
-        cpfs = Gazette.scan_cpf(text, validate=True)
-        self.assertEqual(len(cpfs), 4)
-
-    def test_cnpj_has_been_validated(self):
-        text = self.process_gazette_text("tests/data/fake_cpf_cnpj.pdf")
-        cnpj = Gazette.scan_cnpj(text, validate=True)
-        self.assertEqual(len(cnpj), 3)

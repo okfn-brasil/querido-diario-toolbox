@@ -1,11 +1,14 @@
-from typing import List, Optional
+from typing import Sequence
 import re
+
+CPF_REGEX = r"\w{3}\.\w{3}\.\w{3}\-\w{2}"
+CNPJ_REGEX = r"\w{2}\.\w{3}\.\w{3}\/\w{4}\-\w{2}"
 
 
 def calculate_id_digit(numbers, weights):
     """
         Calculation validation digits for cpf and cnpj for
-        validate_individual_identifiers function
+        validation functions
     """
     multiply = [int(num) * weight for num, weight in zip(numbers, weights)]
     total = sum(multiply)
@@ -16,36 +19,63 @@ def calculate_id_digit(numbers, weights):
         return numbers + str(11 - remainder)
 
 
-def scan_individual_identifiers(text: str, cpf: bool = True) -> List[str]:
+def extract_cpfs(text: str) -> Sequence[str]:
     """
-        Scan for cpfs (social security IDs) and cnpjs (corporate IDs)
-        in gazette.
+    Extract all substrings in text which match with the CPF pattern
     """
-    if cpf:
-        regex = re.compile(r"\w{3}\.\w{3}\.\w{3}\-\w{2}")
-    else:
-        regex = re.compile(r"\w{2}\.\w{3}\.\w{3}/\w{4}\-\w{2}")
-
-    identifiers = re.findall(regex, text)
-    return identifiers
+    regex = re.compile(CPF_REGEX)
+    cpfs = re.findall(regex, text)
+    return cpfs
 
 
-def validate_individual_identifiers(identifier: str, cpf: bool = True) -> bool:
+def is_valid_cpf(cpf: str) -> bool:
     """
-        Validate identifiers for use in scan_individual_identifiers
-        function.
+    Validates if the given CPF is valid.
     """
-    identifier = re.sub(r"\-|\.|/", "", identifier)
-    dv = identifier[:-2]
-
+    cpf = re.sub(r"\-|\.|/", "", cpf)
+    dv = cpf[:-2]
     CPF_WEIGHTS = (11, 10, 9, 8, 7, 6, 5, 4, 3, 2)
+    check = calculate_id_digit(numbers=dv, weights=CPF_WEIGHTS[1:])
+    check = calculate_id_digit(numbers=check, weights=CPF_WEIGHTS)
+    return cpf == check
+
+
+def extract_and_validate_cpf(text: str) -> Sequence[str]:
+    """
+    Extract all substrings in text which match with the CPF pattern removing
+    those one which digits validates failed.
+    """
+    cpfs = extract_cpfs(text)
+    cpfs = [cpf for cpf in cpfs if is_valid_cpf(cpf)]
+    return cpfs
+
+
+def extract_cnpjs(text: str) -> Sequence[str]:
+    """
+    Extract all substrings in text which match with the CNPJ pattern
+    """
+    regex = re.compile(CNPJ_REGEX)
+    cnpjs = re.findall(regex, text)
+    return cnpjs
+
+
+def is_valid_cnpj(cnpj: str) -> bool:
+    """
+    Validates if the given CNPJ is valid.
+    """
+    cnpj = re.sub(r"\-|\.|/", "", cnpj)
+    dv = cnpj[:-2]
     CNPJ_WEIGHTS = (6, 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2)
+    check = calculate_id_digit(numbers=dv, weights=CNPJ_WEIGHTS[1:])
+    check = calculate_id_digit(numbers=check, weights=CNPJ_WEIGHTS)
+    return cnpj == check
 
-    if cpf:
-        check = calculate_id_digit(numbers=dv, weights=CPF_WEIGHTS[1:])
-        check = calculate_id_digit(numbers=check, weights=CPF_WEIGHTS)
-    else:
-        check = calculate_id_digit(numbers=dv, weights=CNPJ_WEIGHTS[1:])
-        check = calculate_id_digit(numbers=check, weights=CNPJ_WEIGHTS)
 
-    return identifier == check
+def extract_and_validate_cnpj(text: str) -> Sequence[str]:
+    """
+    Extract all substrings in text which match with the CNPJ pattern removing
+    those one which digits validates failed.
+    """
+    cnpjs = extract_cnpjs(text)
+    cnpjs = [cnpj for cnpj in cnpjs if is_valid_cnpj(cnpj)]
+    return cnpjs
