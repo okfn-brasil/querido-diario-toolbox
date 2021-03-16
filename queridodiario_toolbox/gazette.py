@@ -30,6 +30,7 @@ class Gazette:
         self.filepath = filepath
         self.tika_jar = apache_tika_jar
         self.content = content
+        self.store_text = False
 
         if self.filepath:
             check_file_type_supported(self.filepath)
@@ -62,22 +63,30 @@ class Gazette:
         """
             Process gazette text and return linearized text
         """
+        self.store_text = store_text
+
         if isinstance(self.content, dict):
             raise TypeError("str expected, not dict")
         else:
             text = remove_breaks(self.content)
             text = remove_duplicate_punctuation(text)
-            if store_text:
+            if self.store_text:
                 self.content = text
             else:
                 return text
 
-    @staticmethod
-    def scan_cpf(text, validate: Optional[bool] = False) -> Sequence[str]:
+    def scan_cpf(
+        self, text: Optional[str] = None, validate: Optional[bool] = False
+    ) -> Sequence[str]:
         """
             Scan for cpfs and validate cpfs them if required by user.
         """
-        cpfs = scan_individual_identifiers(text)
+        if self.store_text:
+            cpfs = scan_individual_identifiers(self.content)
+        elif not self.store_text and not text:
+            raise Exception("You need to provide a string to scan for CPF.")
+        else:
+            cpfs = scan_individual_identifiers(text)
 
         if validate:
             cpfs = [
@@ -87,12 +96,18 @@ class Gazette:
         if cpfs:
             return set(cpfs)
 
-    @staticmethod
-    def scan_cnpj(text, validate: Optional[bool] = False) -> Sequence[str]:
+    def scan_cnpj(
+        self, text: Optional[str] = None, validate: Optional[bool] = False
+    ) -> Sequence[str]:
         """
             Scan for cnpjs and validate cpfs them if required by user.
         """
-        cnpjs = scan_individual_identifiers(text, cpf=False)
+        if self.store_text:
+            cnpjs = scan_individual_identifiers(self.content, cpf=False)
+        elif not self.store_text and not text:
+            raise Exception("You need to provide a string to scan for CNPJ.")
+        else:
+            cnpjs = scan_individual_identifiers(text, cpf=False)
 
         if validate:
             cnpjs = [
