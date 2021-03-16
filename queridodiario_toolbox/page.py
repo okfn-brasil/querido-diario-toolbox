@@ -1,7 +1,7 @@
 from typing import Optional
 
-from .gazette import Gazette
 from .etl.file_transform import *
+from .gazette import Gazette
 from .process.text_process import *
 
 

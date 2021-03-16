@@ -92,14 +92,25 @@ def is_json(filepath: str) -> bool:
     """
         If the file type is html, return True. Otherwise, return False.
     """
-    return is_file_type(filepath, file_types=["application/json"])
+    return is_file_type(filepath, file_types=["application/json"]) or (
+        is_txt(filepath) and has_suffix_in_name(filepath, "json")
+    )
+
+
+def has_suffix_in_name(filepath: str, suffix: str) -> bool:
+    """
+    Check if the given file path has the given suffix (file extension).
+    """
+    return filepath.endswith(suffix)
 
 
 def is_jar(filepath: str) -> bool:
     """
         If the file type is jar, return True. Otherwise, return False.
     """
-    return is_file_type(filepath, file_types=["application/java-archive"])
+    return is_file_type(
+        filepath, file_types=["application/java-archive", "application/zip"]
+    )
 
 
 def is_jpeg(filepath: str) -> bool:
@@ -201,7 +212,13 @@ def load_file_content(filepath: str) -> str:
     """
         Load content from file
     """
-    if is_txt(filepath):
+    if is_json(filepath):
+        logging.debug(f"{filepath} is json")
+        with open(filepath, "r") as fp:
+            content = json.load(fp)
+        return content
+    elif is_txt(filepath):
+        logging.debug(f"{filepath} is text")
         try:
             with codecs.open(filepath) as fp:
                 content = fp.read()
@@ -213,10 +230,6 @@ def load_file_content(filepath: str) -> str:
         except Exception as e:
             logging.error(e)
             print(e)
-    elif is_json(filepath):
-        with open(filepath, "r") as fp:
-            content = json.load(fp)
-        return content
     else:
         raise Exception(
             (
