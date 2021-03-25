@@ -60,3 +60,64 @@ def execute_tabula(
     page = check_output(command, stderr=DEVNULL)
     page = page.decode("utf-8")
     return page
+
+
+# def process_text(self, store_text: Optional[bool] = False) -> str:
+#     """
+#         Process gazette text and return linearized text
+#     """
+#     self.store_text = store_text
+
+#     if isinstance(self.content, dict):
+#         raise TypeError("str expected, not dict")
+#     else:
+#         text = remove_breaks(self.content)
+#         text = remove_duplicate_punctuation(text)
+#         if self.store_text:
+#             self.content = text
+#         else:
+#             return text
+
+# def scan_cpf(
+#     self, text: Optional[str] = None, validate: Optional[bool] = False
+# ) -> Sequence[str]:
+#     """
+#         Scan for cpfs and validate cpfs them if required by user.
+#     """
+#     if self.store_text:
+#         cpfs = scan_individual_identifiers(self.content)
+#     elif not self.store_text and not text:
+#         raise Exception("You need to provide a string to scan for CPF.")
+#     else:
+#         cpfs = scan_individual_identifiers(text)
+
+#     if validate:
+#         cpfs = [
+#             cpf for cpf in cpfs if validate_individual_identifiers(cpf)
+#         ]
+
+#     if cpfs:
+#         return set(cpfs)
+
+# def scan_cnpj(
+#     self, text: Optional[str] = None, validate: Optional[bool] = False
+# ) -> Sequence[str]:
+#     """
+#         Scan for cnpjs and validate cpfs them if required by user.
+#     """
+#     if self.store_text:
+#         cnpjs = scan_individual_identifiers(self.content, cpf=False)
+#     elif not self.store_text and not text:
+#         raise Exception("You need to provide a string to scan for CNPJ.")
+#     else:
+#         cnpjs = scan_individual_identifiers(text, cpf=False)
+
+#     if validate:
+#         cnpjs = [
+#             cnpj
+#             for cnpj in cnpjs
+#             if validate_individual_identifiers(cnpj, cpf=False)
+#         ]
+
+#     if cnpjs:
+#         return set(cnpjs)

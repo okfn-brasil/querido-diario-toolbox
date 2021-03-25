@@ -4,7 +4,7 @@ import re
 
 def calculate_id_digit(numbers, weights):
     """
-        Calculation validation digits for cpf and cnpj for
+        Calculate validation digits for cpf and cnpj for the
         validate_individual_identifiers function
     """
     multiply = [int(num) * weight for num, weight in zip(numbers, weights)]

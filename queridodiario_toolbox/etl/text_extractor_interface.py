@@ -7,7 +7,7 @@ class TextExtractor(abc.ABC):
     """
 
     @abc.abstractmethod
-    def extract_text(self, gazette):
+    def extract_content(self, gazette):
         """
         Extract the text from the given gazette.
         """
