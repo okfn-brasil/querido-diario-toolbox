@@ -1,32 +1,28 @@
 from typing import Optional, Sequence
 
-from .etl.file_transform import *
-from .process.edition_process import *
-from .process.text_process import *
+from .etl.file_transform import check_file_type_supported, is_txt, is_json
 from .etl.text_extractor import create_text_extractor
+from .process.information_retrieve import scan_cpf, scan_cnpj
+from .process.text_process import process_text
+
 
 class Gazette:
+
     """
-        The Gazette class contains the methods to process all gazette
-        editions downloaded in project querido diário.
+    The Gazette class contains the methods to process all gazette
+    editions downloaded in project querido diário.
 
-        Args:
-            config:          a config file to find your extraction
-                             method.
-            filepath:        a gazette edition to process or read. it
-                             takes precedence over content if both are
-                             specified.
+    Args:
+        config:         a config file to find your extraction
+                        method.
+        gazette_path:   a gazette edition to process or read. it
+                        takes precedence over content if both are
+                        specified.
     """
 
-    def __init__(self, config, gazette_path):
-
+    def __init__(self, config, gazette_path: Optional[str]=None):
         self.extractor = create_text_extractor(config)
-
         self.gazette_path = gazette_path
-        self.content_path = None
-        self.content = None
-        self.metadata_path = None
-        self.metadata = None
 
         if self.gazette_path:
             check_file_type_supported(self.gazette_path)
@@ -35,8 +31,8 @@ class Gazette:
 
     def extract_content(self) -> None:
         """
-            Extract gazette content, save to disk, and store filepath
-            in filepath class content
+        Extract gazette content, save to disk, and store filepath
+        in filepath class content
         """
         if self.gazette_path:
             self.extractor.extract_content(self.gazette_path)
@@ -46,7 +42,7 @@ class Gazette:
 
     def load_content(self) -> None:
         """
-            Load gazette content and store in content class object
+        Load gazette content and store in content class object
         """
         if is_txt(self.content_path):
             self.extractor.load_content(self.content_path)
@@ -56,8 +52,8 @@ class Gazette:
 
     def extract_metadata(self) -> None:
         """
-            Extract gazette metadata, save to disk, and store filepath
-            in filepath class method
+        Extract gazette metadata, save to disk, and store filepath
+        in filepath class method
         """
         if self.gazette_path:
             self.extractor.extract_metadata(self.gazette_path)
@@ -67,11 +63,29 @@ class Gazette:
 
     def load_metadata(self) -> None:
         """
-            Extract gazette metadata, save to disk, and store filepath
-            in filepath class method
+        Extract gazette metadata, save to disk, and store filepath
+        in filepath class method
         """
         if is_json(self.metadata_path):
             self.extractor.load_metadata(self.metadata_path)
             self.metadata = self.extractor.metadata
         else:
             raise Exception("You must pass a path to a gazette metadata file.")
+
+    def process_text(self) -> None:
+        """
+        Process gazette text and return linearized text
+        """
+        self.content = process_text(self.content)
+
+    def scan_cpf(self, validate: Optional[bool]=True) -> Sequence[str]:
+        """
+        Scan for cpfs and validate cpfs them if required by user.
+        """
+        return scan_cpf(self.content, validate)
+
+    def scan_cnpj(self, validate: Optional[bool]=True) -> Sequence[str]:
+        """
+        Scan for cnpjs and validate cpfs them if required by user.
+        """
+        return scan_cnpj(self.content, validate)

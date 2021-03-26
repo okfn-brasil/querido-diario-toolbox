@@ -16,12 +16,21 @@ LOGGER = logging.getLogger(__name__)
 
 
 class ApacheTikaExtractor(TextExtractor):
+
+    """
+    Class Tika Extractor contains the methods to extract content and
+    metadata from gazette files using a local Apache Tika file.
+    """
+
     def __init__(self, apache_tika_jar, **kwargs):
         if not is_jar(apache_tika_jar):
             raise Exception("ApacheTikaExtractor expected a jar file.")
         self.apache_tika_jar = apache_tika_jar
 
     def _build_apache_tika_command(self, gazette_file: str, metadata=False):
+        """
+        Creates the tika command
+        """
         command = [
             "java",
             "-jar",
@@ -40,15 +49,10 @@ class ApacheTikaExtractor(TextExtractor):
         return command
 
     def extract_content(self, filepath):
-
         """
-        Calls the Apache Tika command using the configured jar file
-        to extract text from any given gazette. The extracted text
-        will be written back to a text file on disk. The path to the
-        text file will be stored in the content_file member variable
-        in the gazette object
+        This method executes text extraction and returns the path to the
+        (new) file containing gazette content.
         """
-
         check_file_to_extract_text_is_valid(filepath)
         command = self._build_apache_tika_command(filepath)
         path_src, _ = os.path.splitext(filepath)
@@ -64,24 +68,18 @@ class ApacheTikaExtractor(TextExtractor):
         self.content_path = path_dest
 
     def load_content(self, filepath):
-
         """
-        Loads the content of the content_file file into the content
+        This method loads the content of the filepath into the content
         member variable in the gazette object.
         """
-
         with open(filepath, "r") as f:
             self.content = f.read()
 
     def extract_metadata(self, filepath):
-
         """
-        Calls the Apache Tika command using the configured jar file to extract
-        metadata from the given gazette. The extracted metadata info will be
-        write back to a json file on disk. The path to the json file will be
-        stored in the metadata_file member variable in the gazette object.
+        This method executes metadata extraction and returns the path to
+        the (new) file containing gazette metadata.
         """
-
         check_file_to_extract_text_is_valid(filepath)
         command = self._build_apache_tika_command(filepath, metadata=True)
         path_src, _ = os.path.splitext(filepath)
@@ -98,28 +96,30 @@ class ApacheTikaExtractor(TextExtractor):
         self.metadata_path = path_dest
 
     def load_metadata(self, filepath):
-
         """
-        Loads the content of the metadata_file file into the
-        metadata member variable in the gazette object.
+        This method loads the content of the filepath into the metadata
+        member variable in the gazette object.
         """
-
         with open(filepath, "r") as f:
             self.metadata = json.load(f)
 
 
 class ApacheTikaServerExtractor(TextExtractor):
+
+    """
+    Class Tika Server Extractor contains the methods to extract content
+    and metadata from gazette files using an Apache Tika Server.
+    """
+
     def __init__(self, apache_tika_server, **kwargs):
         if not is_url(apache_tika_server):
             raise Exception("ApacheTikaServerExtractor expected a server url.")
         self.apache_tika_server = apache_tika_server
 
     def _build_apache_tika_command(self, metadata=False):
-
         """
-        something goes here
+        Creates the server URL
         """
-
         if metadata:
             command = self.apache_tika_server + 'meta'
         else:
@@ -128,9 +128,9 @@ class ApacheTikaServerExtractor(TextExtractor):
         return command
 
     def extract_content(self, filepath):
-
         """
-        something goes here
+        This method executes text extraction and returns the path to the
+        (new) file containing gazette content.
         """
         check_file_to_extract_text_is_valid(filepath)
         command = self._build_apache_tika_command()
@@ -147,21 +147,18 @@ class ApacheTikaServerExtractor(TextExtractor):
         self.content_path = path_dest
 
     def load_content(self, filepath):
-
         """
         Loads the content of the content_file file into the content
         member variable in the gazette object.
         """
-
         with open(filepath, "r") as f:
             self.content = f.read()
 
     def extract_metadata(self, filepath):
-
         """
-        something goes here
+        This method executes metadata extraction and returns the path to
+        the (new) file containing gazette metadata.
         """
-
         check_file_to_extract_text_is_valid(filepath)
         command = self._build_apache_tika_command(metadata=True)
         path_src, _ = os.path.splitext(filepath)
@@ -169,12 +166,9 @@ class ApacheTikaServerExtractor(TextExtractor):
 
         with open(filepath, "rb") as f:
             file = f.read()
-            r = requests.put(
-                command,
-                data=file,
-                headers={"Accept": "application/json"}
-            )
 
+        headers = {"Accept": "application/json"}
+        r = requests.put(command, data=file, headers=headers)
         metadata = literal_eval(r.content.decode('UTF-8'))
 
         with open(path_dest, "w") as f:
@@ -183,11 +177,9 @@ class ApacheTikaServerExtractor(TextExtractor):
         self.metadata_path = path_dest
 
     def load_metadata(self, filepath):
-
         """
         Loads the content of the metadata_file file into the
         metadata member variable in the gazette object.
         """
-
         with open(filepath, "r") as f:
             self.metadata = json.load(f)

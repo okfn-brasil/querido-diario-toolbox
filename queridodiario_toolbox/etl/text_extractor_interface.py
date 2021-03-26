@@ -1,5 +1,6 @@
 import abc
 
+
 class TextExtractor(abc.ABC):
     """
     Text extractor interface. This interface define the methods that all text
@@ -7,29 +8,29 @@ class TextExtractor(abc.ABC):
     """
 
     @abc.abstractmethod
-    def extract_content(self, gazette):
+    def extract_content(self, filepath):
         """
-        Extract the text from the given gazette.
-        """
-        raise NotImplemented()
-
-    @abc.abstractmethod
-    def load_content(self, gazette):
-        """
-        Load into memory the text from the given gazette.
+        Extract the text from the given filepath.
         """
         raise NotImplemented()
 
     @abc.abstractmethod
-    def extract_metadata(self, gazette):
+    def load_content(self, filepath):
         """
-        Extract the given gazette file metadata
+        Load into memory the text from the given filepath.
         """
         raise NotImplemented()
 
     @abc.abstractmethod
-    def load_metadata(self, gazette):
+    def extract_metadata(self, filepath):
         """
-        Load into memory the given gazette file metadata
+        Extract the given filepath file metadata
+        """
+        raise NotImplemented()
+
+    @abc.abstractmethod
+    def load_metadata(self, filepath):
+        """
+        Load into memory the given filepath file metadata
         """
         raise NotImplemented()
