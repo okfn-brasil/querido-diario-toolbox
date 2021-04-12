@@ -1,106 +1,91 @@
 from typing import Optional, Sequence
 
-from .etl.file_transform import *
-from .process.edition_process import *
-from .process.text_process import *
+from .etl.file_transform import check_file_type_supported, is_txt, is_json
+from .etl.text_extractor import create_text_extractor
+from .process.information_retrieve import scan_cpf, scan_cnpj
+from .process.text_process import process_text
 
 
 class Gazette:
-    """
-        The Gazette class contains the methods to process all gazette
-        editions downloaded in project querido diário.
-
-        Args:
-            filepath:        a gazette edition to process or read. it
-                             takes precedence over content if both are
-                             specified.
-            apache_tika_jar: a filepath pointing to the apache tika
-                             installation.
-            content:         a processed content.
 
     """
+    The Gazette class contains the methods to process all gazette
+    editions downloaded in project querido diário.
 
-    def __init__(
-        self,
-        filepath: Optional[str] = None,
-        apache_tika_jar: Optional[str] = None,
-        content: Optional[str] = None,
-    ):
+    Args:
+        config:         a config file to find your extraction
+                        method.
+        gazette_path:   a gazette edition to process or read. it
+                        takes precedence over content if both are
+                        specified.
+    """
 
-        self.filepath = filepath
-        self.tika_jar = apache_tika_jar
-        self.content = content
-        self.content_file = None
-        self.metadata_file = None
-        self.metadata = None
+    def __init__(self, config, gazette_path: Optional[str]=None):
+        self.extractor = create_text_extractor(config)
+        self.gazette_path = gazette_path
 
-        if self.filepath:
-            check_file_type_supported(self.filepath)
+        if self.gazette_path:
+            check_file_type_supported(self.gazette_path)
         else:
-            if not self.content:
-                raise Exception(
-                    "Either the filepath or content argument must be specified"
-                )
+            self.gazette_path = None
 
-    def extract_content(self, metadata: Optional[bool] = False) -> None:
+    def extract_content(self) -> None:
         """
-            Extract gazette content, save to disk, and store filepath
-            in filepath class content
+        Extract gazette content, save to disk, and store filepath
+        in filepath class content
         """
-        self.filepath = write_file_content(
-            filepath=self.filepath,
-            apache_tika_jar=self.tika_jar,
-            metadata=metadata,
-        )
+        if self.gazette_path:
+            self.extractor.extract_content(self.gazette_path)
+            self.content_path = self.extractor.content_path
+        else:
+            raise Exception("You must pass a path to a gazette file.")
 
     def load_content(self) -> None:
         """
-            Load gazette content and store in content class object
+        Load gazette content and store in content class object
         """
-        self.content = load_file_content(filepath=self.filepath)
-
-    def process_text(self, store_text: Optional[bool] = False) -> str:
-        """
-            Process gazette text and return linearized text
-        """
-        if isinstance(self.content, dict):
-            raise TypeError("str expected, not dict")
+        if is_txt(self.content_path):
+            self.extractor.load_content(self.content_path)
+            self.content = self.extractor.content
         else:
-            text = remove_breaks(self.content)
-            text = remove_duplicate_punctuation(text)
-            if store_text:
-                self.content = text
-            else:
-                return text
+            raise Exception("You must pass a path to a gazette content file.")
 
-    @staticmethod
-    def scan_cpf(text, validate: Optional[bool] = False) -> Sequence[str]:
+    def extract_metadata(self) -> None:
         """
-            Scan for cpfs and validate cpfs them if required by user.
+        Extract gazette metadata, save to disk, and store filepath
+        in filepath class method
         """
-        cpfs = scan_individual_identifiers(text)
+        if self.gazette_path:
+            self.extractor.extract_metadata(self.gazette_path)
+            self.metadata_path = self.extractor.metadata_path
+        else:
+            raise Exception("You must pass a path to a gazette file.")
 
-        if validate:
-            cpfs = [
-                cpf for cpf in cpfs if validate_individual_identifiers(cpf)
-            ]
-
-        if cpfs:
-            return set(cpfs)
-
-    @staticmethod
-    def scan_cnpj(text, validate: Optional[bool] = False) -> Sequence[str]:
+    def load_metadata(self) -> None:
         """
-            Scan for cnpjs and validate cpfs them if required by user.
+        Extract gazette metadata, save to disk, and store filepath
+        in filepath class method
         """
-        cnpjs = scan_individual_identifiers(text, cpf=False)
+        if is_json(self.metadata_path):
+            self.extractor.load_metadata(self.metadata_path)
+            self.metadata = self.extractor.metadata
+        else:
+            raise Exception("You must pass a path to a gazette metadata file.")
 
-        if validate:
-            cnpjs = [
-                cnpj
-                for cnpj in cnpjs
-                if validate_individual_identifiers(cnpj, cpf=False)
-            ]
+    def process_text(self) -> None:
+        """
+        Process gazette text and return linearized text
+        """
+        self.content = process_text(self.content)
 
-        if cnpjs:
-            return set(cnpjs)
+    def scan_cpf(self, validate: Optional[bool]=True) -> Sequence[str]:
+        """
+        Scan for cpfs and validate cpfs them if required by user.
+        """
+        return scan_cpf(self.content, validate)
+
+    def scan_cnpj(self, validate: Optional[bool]=True) -> Sequence[str]:
+        """
+        Scan for cnpjs and validate cpfs them if required by user.
+        """
+        return scan_cnpj(self.content, validate)
