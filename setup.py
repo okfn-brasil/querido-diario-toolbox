@@ -13,7 +13,6 @@ setup(
     ),
     packages=[
         "queridodiario_toolbox",
-        "queridodiario_toolbox.api",
         "queridodiario_toolbox.etl",
         "queridodiario_toolbox.process",
     ],
