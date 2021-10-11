@@ -1,8 +1,8 @@
 from typing import Sequence
 import re
 
-CPF_REGEX = r"\w{3}\.\w{3}\.\w{3}\-\w{2}"
-CNPJ_REGEX = r"\w{2}\.\w{3}\.\w{3}\/\w{4}\-\w{2}"
+CPF_REGEX = r"\d{3}\.\d{3}\.\d{3}\-\d{2}"
+CNPJ_REGEX = r"\d{2}\.\d{3}\.\d{3}\/\d{4}\-\d{2}"
 
 
 def calculate_id_digit(numbers, weights):
