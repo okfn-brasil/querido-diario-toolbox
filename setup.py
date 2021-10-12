@@ -1,5 +1,7 @@
 from distutils.core import setup
 
+from setuptools import find_packages
+
 setup(
     name="querido-diario-toolbox",
     description="Querido Diário Toolbox",
@@ -11,10 +13,7 @@ setup(
         "as well as any other people which wants to perform their own analyses and"
         "run scripts."
     ),
-    packages=[
-        "queridodiario_toolbox",
-        "queridodiario_toolbox.etl",
-        "queridodiario_toolbox.process",
-    ],
+    packages=find_packages(exclude=("tests",)),
+    install_requires=["python-magic"],
     url="https://github.com/okfn-brasil/querido-diario-toolbox",
 )

@@ -1,16 +1,20 @@
 BIN_DIR ?= $(PWD)/tests/bin
 PYTHON_VENV ?= $(PWD)/.venv
 BUILD_ROOT ?= $(PWD)/build
-ISORT_ARGS := --combine-star --combine-as --order-by-type --thirdparty scrapy --multi-line 3 --trailing-comma --force-grid-wrap 0 --use-parentheses --line-width 88
 
 run-python-venv=(. $(PYTHON_VENV)/bin/activate && $1)
 
 pyenv:
 	python3 -m venv $(PYTHON_VENV)
+	chmod +x $(PYTHON_VENV)/bin/activate
 
 .PHONY: install-deps
 install-deps:
 	$(call run-python-venv, pip3 install -r requirements.txt)
+
+.PHONY: update-deps
+update-deps:
+	$(call run-python-venv, pip-compile requirements.in > requirements.txt)
 
 .PHONY: download-binaries
 download-binaries:
@@ -20,22 +24,18 @@ download-binaries:
 
 .PHONY: setup
 setup: pyenv install-deps download-binaries
-
-.PHONY: black
-black:
-	$(call run-python-venv, black $(PWD))
-
-.PHONY: isort
-isort:
-	$(call run-python-venv, python -m isort --apply $(ISORT_ARGS) **/*.py)
+	$(call run-python-venv, pre-commit install)
 
 .PHONY: check
 check:
+	$(call run-python-venv, python -m isort --check --diff $(ISORT_ARGS) **/*.py)
+	$(call run-python-venv, black --check **/*.py)
 	$(call run-python-venv, flake8 **/*.py)
 
 .PHONY: format
-format: black isort
-
+format:
+	$(call run-python-venv, python -m isort **/*.py)
+	$(call run-python-venv, black **/*.py)
 
 .PHONY: test
 test:
@@ -46,7 +46,6 @@ coverage:
 	$(call run-python-venv, coverage erase)
 	$(call run-python-venv, coverage run -m unittest discover -f --start-directory=tests --pattern "*.py")
 	$(call run-python-venv, coverage report -m)
-
 
 .PHONY: build
 build:
