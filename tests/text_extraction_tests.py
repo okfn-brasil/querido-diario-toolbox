@@ -2,8 +2,6 @@ import os
 from unittest import TestCase
 
 from queridodiario_toolbox import Gazette, Page
-from queridodiario_toolbox.etl.file_transform import *
-from queridodiario_toolbox.process import *
 
 
 class TextExtractionTests(TestCase):
@@ -18,9 +16,7 @@ class TextExtractionTests(TestCase):
     # definition of helper functions
     def clean_txt_file_generated_during_tests(self):
         for root, dirs, files in os.walk("tests/data/"):
-            for generated_file in self.get_files_generated_during_tests(
-                root, files
-            ):
+            for generated_file in self.get_files_generated_during_tests(root, files):
                 os.remove(generated_file)
 
     def get_files_generated_during_tests(self, root, files):
@@ -89,7 +85,8 @@ class TextExtractionTests(TestCase):
     def test_extract_metadata_using_invalid_file_type_apache_tika(self):
         with self.assertRaisesRegex(Exception, "Expected Apache Tika jar"):
             gazette = Gazette(
-                "tests/data/fake_gazette.pdf", "tests/data/fake_gazette.pdf",
+                "tests/data/fake_gazette.pdf",
+                "tests/data/fake_gazette.pdf",
             )
             gazette.extract_content(metadata=True)
 
@@ -110,7 +107,7 @@ class TextExtractionTests(TestCase):
 
     def test_class_instantiation_with_tika_path_but_no_filepath(self):
         with self.assertRaises(Exception):
-            gazette = Gazette(apache_tika_jar=self.TIKA_PATH)
+            Gazette(apache_tika_jar=self.TIKA_PATH)
 
     def test_class_instantiation_with_content(self):
         gazette = Gazette(content="tests/data/fake_content.txt")

@@ -46,11 +46,7 @@ class TextExtractionTests(TestCase):
         )
 
     def test_has_suffix_in_name(self):
-        has_json_suffix = has_suffix_in_name(
-            "testing/file/path/test.json", "json"
-        )
+        has_json_suffix = has_suffix_in_name("testing/file/path/test.json", "json")
         self.assertTrue(has_json_suffix)
-        has_txt_suffix = has_suffix_in_name(
-            "testing/file/path/test.json", "txt"
-        )
+        has_txt_suffix = has_suffix_in_name("testing/file/path/test.json", "txt")
         self.assertFalse(has_txt_suffix)

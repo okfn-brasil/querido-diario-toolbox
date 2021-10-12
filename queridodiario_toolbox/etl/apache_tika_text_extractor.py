@@ -1,13 +1,13 @@
+import json
 import logging
 import os
 import subprocess
-import json
 
-from queridodiario_toolbox.etl.text_extractor_interface import TextExtractor
 from queridodiario_toolbox.etl.file_transform import (
-    is_jar,
     check_file_to_extract_text_is_valid,
+    is_jar,
 )
+from queridodiario_toolbox.etl.text_extractor_interface import TextExtractor
 
 LOGGER = logging.getLogger(__name__)
 
@@ -73,9 +73,7 @@ class ApacheTikaExtractor(TextExtractor):
         stored in the metadata_file member variable in the gazette object.
         """
         check_file_to_extract_text_is_valid(gazette.filepath)
-        command = self._build_apache_tika_command(
-            gazette.filepath, metadata=True
-        )
+        command = self._build_apache_tika_command(gazette.filepath, metadata=True)
         path_src, _ = os.path.splitext(gazette.filepath)
         path_dest = path_dest or (path_src + ".json")
 

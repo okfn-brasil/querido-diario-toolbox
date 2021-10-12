@@ -1,2 +1,2 @@
-from .gazette import Gazette
-from .page import Page
+from .gazette import Gazette  # noqa
+from .page import Page  # noqa

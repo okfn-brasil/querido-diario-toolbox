@@ -1,5 +1,5 @@
-from typing import Sequence
 import re
+from typing import Sequence
 
 CPF_REGEX = r"\d{3}\.\d{3}\.\d{3}\-\d{2}"
 CNPJ_REGEX = r"\d{2}\.\d{3}\.\d{3}\/\d{4}\-\d{2}"
@@ -7,8 +7,8 @@ CNPJ_REGEX = r"\d{2}\.\d{3}\.\d{3}\/\d{4}\-\d{2}"
 
 def calculate_id_digit(numbers, weights):
     """
-        Calculation validation digits for cpf and cnpj for
-        validation functions
+    Calculation validation digits for cpf and cnpj for
+    validation functions
     """
     multiply = [int(num) * weight for num, weight in zip(numbers, weights)]
     total = sum(multiply)

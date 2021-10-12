@@ -1,22 +1,25 @@
-from typing import Optional, Sequence
+from typing import Optional
 
-from .etl.file_transform import *
-from .process.edition_process import *
-from .process.text_process import *
+from .etl.file_transform import (
+    check_file_type_supported,
+    load_file_content,
+    write_file_content,
+)
+from .process.text_process import remove_breaks, remove_duplicate_punctuation
 
 
 class Gazette:
     """
-        The Gazette class contains the methods to process all gazette
-        editions downloaded in project querido diário.
+    The Gazette class contains the methods to process all gazette
+    editions downloaded in project querido diário.
 
-        Args:
-            filepath:        a gazette edition to process or read. it
-                             takes precedence over content if both are
-                             specified.
-            apache_tika_jar: a filepath pointing to the apache tika
-                             installation.
-            content:         a processed content.
+    Args:
+        filepath:        a gazette edition to process or read. it
+                         takes precedence over content if both are
+                         specified.
+        apache_tika_jar: a filepath pointing to the apache tika
+                         installation.
+        content:         a processed content.
 
     """
 
@@ -44,8 +47,8 @@ class Gazette:
 
     def extract_content(self, metadata: Optional[bool] = False) -> None:
         """
-            Extract gazette content, save to disk, and store filepath
-            in filepath class content
+        Extract gazette content, save to disk, and store filepath
+        in filepath class content
         """
         self.filepath = write_file_content(
             filepath=self.filepath,
@@ -55,13 +58,13 @@ class Gazette:
 
     def load_content(self) -> None:
         """
-            Load gazette content and store in content class object
+        Load gazette content and store in content class object
         """
         self.content = load_file_content(filepath=self.filepath)
 
     def process_text(self, store_text: Optional[bool] = False) -> str:
         """
-            Process gazette text and return linearized text
+        Process gazette text and return linearized text
         """
         if isinstance(self.content, dict):
             raise TypeError("str expected, not dict")
