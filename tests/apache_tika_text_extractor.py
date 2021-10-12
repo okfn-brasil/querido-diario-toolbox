@@ -3,8 +3,8 @@ from unittest import TestCase, expectedFailure
 
 from queridodiario_toolbox import Gazette
 from queridodiario_toolbox.etl.apache_tika_text_extractor import ApacheTikaExtractor
-from queridodiario_toolbox.etl.text_extractor_interface import TextExtractor
 from queridodiario_toolbox.etl.text_extractor import create_text_extractor
+from queridodiario_toolbox.etl.text_extractor_interface import TextExtractor
 
 ROOT = "tests/bin"
 TIKA_PATH = ROOT + "/tika-app-1.24.1.jar"
@@ -18,13 +18,11 @@ class ApacheTikaTextExtractorTests(TestCase):
 
     @expectedFailure
     def test_if_class_check_if_jar_file_exists(self):
-        apache_tika_extractor = ApacheTikaExtractor("test/jar/path")
+        ApacheTikaExtractor("test/jar/path")
 
     @expectedFailure
     def test_if_class_check_if_binary_is_jar_file(self):
-        apache_tika_extractor = ApacheTikaExtractor(
-            f"tests/data/fake_gazette.doc"
-        )
+        ApacheTikaExtractor("tests/data/fake_gazette.doc")
 
     def test_function_to_assembly_apache_tika_command(self):
         apache_tika_extractor = ApacheTikaExtractor(TIKA_PATH)

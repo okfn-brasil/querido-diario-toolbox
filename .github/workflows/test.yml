@@ -1,7 +1,7 @@
 name: Test and show code coverage
-on: 
+on:
   push:
-    branches: 
+    branches:
       - main
   pull_request:
     branches:
@@ -26,4 +26,3 @@ jobs:
       - name: Run tests and show code coverage
         run: |
           make coverage
-
