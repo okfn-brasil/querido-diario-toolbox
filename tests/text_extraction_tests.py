@@ -1,7 +1,7 @@
 import os
 from unittest import TestCase
 
-from queridodiario_toolbox import Gazette, Page
+from querido_diario_toolbox import Gazette, Page
 
 
 class TextExtractionTests(TestCase):

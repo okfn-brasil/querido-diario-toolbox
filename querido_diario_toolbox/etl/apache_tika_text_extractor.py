@@ -3,11 +3,11 @@ import logging
 import os
 import subprocess
 
-from queridodiario_toolbox.etl.file_transform import (
+from querido_diario_toolbox.etl.file_transform import (
     check_file_to_extract_text_is_valid,
     is_jar,
 )
-from queridodiario_toolbox.etl.text_extractor_interface import TextExtractor
+from querido_diario_toolbox.etl.text_extractor_interface import TextExtractor
 
 LOGGER = logging.getLogger(__name__)
 
