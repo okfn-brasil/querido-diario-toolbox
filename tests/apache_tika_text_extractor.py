@@ -1,10 +1,10 @@
 import os
 from unittest import TestCase, expectedFailure
 
-from queridodiario_toolbox import Gazette
-from queridodiario_toolbox.etl.apache_tika_text_extractor import ApacheTikaExtractor
-from queridodiario_toolbox.etl.text_extractor import create_text_extractor
-from queridodiario_toolbox.etl.text_extractor_interface import TextExtractor
+from querido_diario_toolbox import Gazette
+from querido_diario_toolbox.etl.apache_tika_text_extractor import ApacheTikaExtractor
+from querido_diario_toolbox.etl.text_extractor import create_text_extractor
+from querido_diario_toolbox.etl.text_extractor_interface import TextExtractor
 
 ROOT = "tests/bin"
 TIKA_PATH = ROOT + "/tika-app-1.24.1.jar"

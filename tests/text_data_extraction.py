@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from queridodiario_toolbox.process.edition_process import (
+from querido_diario_toolbox.process.edition_process import (
     extract_and_validate_cnpj,
     extract_and_validate_cpf,
     extract_cnpjs,

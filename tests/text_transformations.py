@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from queridodiario_toolbox.process.text_process import (
+from querido_diario_toolbox.process.text_process import (
     remove_breaks,
     remove_duplicate_punctuation,
 )

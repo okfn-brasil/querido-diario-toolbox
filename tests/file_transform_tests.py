@@ -3,7 +3,7 @@ import os
 import tempfile
 from unittest import TestCase
 
-from queridodiario_toolbox.etl.file_transform import has_suffix_in_name, is_json
+from querido_diario_toolbox.etl.file_transform import has_suffix_in_name, is_json
 
 
 class TextExtractionTests(TestCase):
