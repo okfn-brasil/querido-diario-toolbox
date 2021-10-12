@@ -36,7 +36,7 @@ class ApacheTikaExtractor(TextExtractor):
         LOGGER.debug(command)
         return command
 
-    def extract_text(self, gazette):
+    def extract_text(self, gazette, path_dest=None):
         """
         Calls the Apache Tika command using the configured jar file to extract
         text from the given gazette. The extract text will be write back to a
@@ -46,7 +46,7 @@ class ApacheTikaExtractor(TextExtractor):
         check_file_to_extract_text_is_valid(gazette.filepath)
         command = self._build_apache_tika_command(gazette.filepath)
         path_src, _ = os.path.splitext(gazette.filepath)
-        path_dest = path_src + ".txt"
+        path_dest = path_dest or (path_src + ".txt")
         with open(path_dest, "w") as f:
             subprocess.run(
                 command,
@@ -65,7 +65,7 @@ class ApacheTikaExtractor(TextExtractor):
         with open(gazette.content_file, "r") as f:
             gazette.content = f.read()
 
-    def extract_metadata(self, gazette):
+    def extract_metadata(self, gazette, path_dest=None):
         """
         Calls the Apache Tika command using the configured jar file to extract
         metadata from the given gazette. The extracted metadata info will be
@@ -77,7 +77,7 @@ class ApacheTikaExtractor(TextExtractor):
             gazette.filepath, metadata=True
         )
         path_src, _ = os.path.splitext(gazette.filepath)
-        path_dest = path_src + ".json"
+        path_dest = path_dest or (path_src + ".json")
 
         with open(path_dest, "w") as f:
             subprocess.run(
