@@ -26,3 +26,7 @@ jobs:
       - name: Run tests and show code coverage
         run: |
           make coverage
+
+      - name: Check code formatting
+        run: |
+          make check
