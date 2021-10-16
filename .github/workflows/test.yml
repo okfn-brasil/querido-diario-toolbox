@@ -1,4 +1,4 @@
-name: Test and show code coverage
+name: Check code formatting, test and show code coverage
 on:
   push:
     branches:
@@ -10,7 +10,7 @@ on:
 
 jobs:
   everything:
-    name: Test and show code coverage
+    name: Check code formatting, test and show code coverage
     runs-on: ubuntu-latest
     steps:
       - name: Checkout source code
@@ -22,6 +22,10 @@ jobs:
       - name: Setup test environment
         run: |
           make setup
+
+      - name: Check code formatting
+        run: |
+          make check
 
       - name: Run tests and show code coverage
         run: |
