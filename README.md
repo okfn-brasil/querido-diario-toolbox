@@ -21,7 +21,7 @@ arquivos de vários formatos para texto puro.
 $ pip install querido-diario-toolbox
 ```
 
-Atualmente, a `querido-diario-toolbox` é compatível com Python 3.8+.
+Atualmente, a `querido-diario-toolbox` é compatível com Python 3.6+.
 
 Para executar extrações de texto é necessário ter o
 [Tesseract OCR](https://tesseract-ocr.github.io/tessdoc/) instalado. Assim como

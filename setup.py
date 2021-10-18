@@ -10,7 +10,7 @@ DESCRIPTION = "Este projeto empodera quem deseja processar dados no contexto do 
 URL = "https://github.com/okfn-brasil/querido-diario-toolbox"
 EMAIL = "contato@serenata.ai"
 AUTHOR = "Open Knowledge Brasil"
-REQUIRES_PYTHON = ">=3.8.0"
+REQUIRES_PYTHON = ">=3.6.0"
 
 # Pacotes obrigatórios
 REQUIRED = ["python-magic"]
