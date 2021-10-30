@@ -1,5 +1,11 @@
 # Colaborando
 
+______________________________________
+
+_[Click here](languages/en-US/CONTRIBUTING.md) to read this article in english._
+______________________________________
+
+
 Este projeto ainda está em fase inicial, então qualquer ideia e contribuição é
 muito bem vinda. Se for possível e assim desejar, se engaje nas *Issues* e na
 comunidade do projeto para fazermos esta construção coletivamente.

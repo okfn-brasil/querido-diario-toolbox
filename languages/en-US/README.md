@@ -66,4 +66,4 @@ After running `extractor.load_content(diario)`, two files (one `.txt` with the p
 
 ## Contributing
 
-To find out how to collaborate with the project as a whole, either through *Issues*, *Pull Requests* or interacting with the community, read the [general collaboration document of Querido Diário](https://github.com/okfn-brasil/querido-diario-comunidade/blob/main/CONTRIBUTING.md) and then read the [specific collaboration document of this repository](CONTRIBUTING.md).
+To find out how to collaborate with the project as a whole, either through *Issues*, *Pull Requests* or interacting with the community, read the [general collaboration document of Querido Diário](https://github.com/okfn-brasil/querido-diario-comunidade/blob/main/CONTRIBUTING.md) and then read the [specific collaboration document of this repository](languages/en-US/CONTRIBUTING.md).
