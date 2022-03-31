@@ -3,6 +3,11 @@
 [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/querido-diario-toolbox)](https://pypi.org/project/querido-diario-toolbox/)
 [![PyPI](https://img.shields.io/pypi/v/querido-diario-toolbox)](https://pypi.org/project/querido-diario-toolbox/)
 
+______________________________________
+
+_[Click here](languages/en-US/README.md) to read this article in english._
+______________________________________
+
 O objetivo da `querido-diario-toolbox` é dar à comunidade do Querido Diário
 o ferramental para executar suas próprias análises e manipulações com os dados
 que são obtidos pelo QD. Além disso, a biblioteca também será
@@ -53,8 +58,7 @@ Out[3]: 'Este texto tem vários espaços em branco desnecessários.'
 ```python
 In [1]: from querido_diario_toolbox.process.edition_process import extract_and_validate_cnpj
 
-In [2]: texto = "As empresas de CNPJ válidos 00.000.000/0001-91 e 00.360.305/0001-04 existem mas a de CNPJ 12.123.123
-   ...: /1234.12 não existe..."
+In [2]: texto = "As empresas de CNPJ válidos 00.000.000/0001-91 e 00.360.305/0001-04 existem mas a de CNPJ 12.123.123/1234.12 não existe..."
 
 In [3]: extract_and_validate_cnpj(texto)
 Out[3]: ['00.000.000/0001-91', '00.360.305/0001-04']
