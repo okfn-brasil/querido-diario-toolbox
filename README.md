@@ -39,6 +39,8 @@ Agradecemos por considerar contribuir com o Querido Diário! :tada:
 
 Você encontra como fazê-lo no [CONTRIBUTING.md](.github/CONTRIBUTING.md)!
 
+Além disso, consulte a [documentação do Querido Diário](https://docs.queridodiario.ok.org.br/pt/latest/index.html) para te ajudar. 
+
 # Como configurar o ambiente de desenvolvimento
 
 Para utilizar a `querido-diario-toolbox` é necessário ter [Python](https://docs.python.org/3.8/) (3.8+) instalado, além de [Tesseract OCR](https://tesseract-ocr.github.io/tessdoc/), os `.jar` de [Apache Tika](https://tika.apache.org/download.html) (v1.24.1+) e [Tabula](https://github.com/tabulapdf/tabula-java/releases) (v1.0.4+). 
