@@ -18,11 +18,11 @@ REQUIRED = ["python-magic"]
 # Pacotes extras
 EXTRAS = {}
 
-here = os.path.abspath(os.path.dirname(__file__))
+PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
 
 # README.md como descrição longa
 try:
-    with io.open(os.path.join(here, "README.md"), encoding="utf-8") as f:
+    with io.open(os.path.join(PROJECT_ROOT, "docs/README.md"), encoding="utf-8") as f:
         long_description = "\n" + f.read()
 except FileNotFoundError:
     long_description = DESCRIPTION
@@ -31,7 +31,7 @@ about = {}
 
 # Versão do pacote
 project_slug = NAME.lower().replace("-", "_").replace(" ", "_")
-with open(os.path.join(here, project_slug, "__version__.py")) as f:
+with open(os.path.join(PROJECT_ROOT, project_slug, "__version__.py")) as f:
     exec(f.read(), about)
 
 
@@ -55,7 +55,7 @@ class UploadCommand(Command):
     def run(self):
         try:
             self.status("Removing previous builds…")
-            rmtree(os.path.join(here, "dist"))
+            rmtree(os.path.join(PROJECT_ROOT, "dist"))
         except OSError:
             pass
 
