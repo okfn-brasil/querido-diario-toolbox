@@ -88,7 +88,7 @@ pyparsing==2.4.7
     # via packaging
 python-magic==0.4.24
     # via querido-diario-toolbox
-pyyaml==5.4.1
+pyyaml==6.0.1
     # via pre-commit
 readme-renderer==30.0
     # via twine
