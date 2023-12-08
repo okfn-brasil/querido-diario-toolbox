@@ -35,7 +35,7 @@ Agradecemos por considerar contribuir com o Querido Diário! :tada:
 
 Você encontra como fazê-lo no [CONTRIBUTING.md](https://github.com/okfn-brasil/querido-diario-toolbox/blob/main/docs/CONTRIBUTING.md)!
 
-Além disso, consulte a [documentação do Querido Diário](https://docs.queridodiario.ok.org.br/pt/latest/index.html) para te ajudar. 
+Além disso, consulte a [documentação do Querido Diário](https://docs.queridodiario.ok.org.br/pt-br/latest/) para te ajudar. 
 
 # Como executar
 Para utilizar a `querido-diario-toolbox` é necessário ter [Python](https://docs.python.org/3.8/) (3.8+) instalado, além de [Tesseract OCR](https://tesseract-ocr.github.io/tessdoc/), os `.jar` de [Apache Tika](https://tika.apache.org/download.html) (v1.24.1+) e [Tabula](https://github.com/tabulapdf/tabula-java/releases) (v1.0.4+).
@@ -87,7 +87,7 @@ In [4]: extrator.extract_text(diario)
 
 Após a execução de `extrator.load_content(diario)`, dois arquivos (um `.txt` com o texto puro e um `.json` com os metadados) serão criados.
 
-**Saiba mais**: Informações completas da biblioteca *querido-diario-toolbox* acesse sua [documentação](https://docs.queridodiario.ok.org.br/pt/latest/utilizando-o-toolbox.html)
+**Saiba mais**: Informações completas da biblioteca *querido-diario-toolbox* acesse sua [documentação](https://docs.queridodiario.ok.org.br/pt-br/latest/utilizando-a-toolbox.html)
 
 # Suporte 
 <p>  
