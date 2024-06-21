@@ -9,7 +9,7 @@
 </p>
 
 # Toolbox
-Dentro do [ecossistema do Querido Diário](https://github.com/okfn-brasil/querido-diario-comunidade/blob/main/.github/CONTRIBUTING.md#ecossistema-do-querido-di%C3%A1rio), este repositório disponibiliza uma **biblioteca** com o ferramental para que a comunidade possa fazer suas próprias análises e manipulações com os recursos do projeto.
+Dentro do [ecossistema do Querido Diário](https://docs.queridodiario.ok.org.br/pt-br/latest/contribuindo/guia-de-contribuicao.html#ecossistema-do-querido-diario), este repositório disponibiliza uma **biblioteca** com o ferramental para que a comunidade possa fazer suas próprias análises e manipulações com os recursos do projeto.
 
 A biblioteca oferece diferentes níveis de abstrações para trabalhar os dados, desde uma simples limpeza de texto até conversão de diferentes formatos de arquivo para texto puro.
 
