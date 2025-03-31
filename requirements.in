@@ -5,4 +5,5 @@ pip-tools
 pre-commit
 twine
 python-magic
+python-slugify==7.0.0
 ruff
