@@ -1,9 +1,7 @@
 -e file:.
 
-black
 coverage
-flake8
-isort
 pip-tools
 pre-commit
 twine
+ruff
