@@ -26,8 +26,12 @@ download-binaries:
 	cd $(BIN_DIR) && curl -L -O http://archive.apache.org/dist/tika/tika-app-1.24.1.jar
 
 .PHONY: setup
-setup: pyenv install-deps download-binaries
+setup: venv install-deps download-binaries
 	$(call run-python-venv, pre-commit install)
+
+.PHONY: check
+check:
+	$(call run-python-venv, ruff check **/*.py)
 
 .PHONY: format
 format:
