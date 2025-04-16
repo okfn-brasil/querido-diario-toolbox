@@ -13,7 +13,7 @@ AUTHOR = "Open Knowledge Brasil"
 REQUIRES_PYTHON = ">=3.8.0"
 
 # Pacotes obrigatórios
-REQUIRED = ["python-magic"]
+REQUIRED = ["python-magic", "python-slugify"]
 
 # Pacotes extras
 EXTRAS = {}
@@ -36,7 +36,7 @@ with open(os.path.join(PROJECT_ROOT, project_slug, "__version__.py")) as f:
 
 
 class UploadCommand(Command):
-    """Apóia a publicação com o setup.py"""
+    """Apoia a publicação com o setup.py"""
 
     description = "Build and publish the package."
     user_options = []

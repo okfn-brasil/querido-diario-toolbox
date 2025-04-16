@@ -4,9 +4,12 @@ BUILD_ROOT ?= $(PWD)/build
 
 run-python-venv=(. $(PYTHON_VENV)/bin/activate && $1)
 
-pyenv:
+venv:
 	python3 -m venv $(PYTHON_VENV)
 	chmod +x $(PYTHON_VENV)/bin/activate
+
+activate-path:
+	@echo "$(PYTHON_VENV)/bin/activate"
 
 .PHONY: install-deps
 install-deps:
@@ -23,19 +26,16 @@ download-binaries:
 	cd $(BIN_DIR) && curl -L -O http://archive.apache.org/dist/tika/tika-app-1.24.1.jar
 
 .PHONY: setup
-setup: pyenv install-deps download-binaries
+setup: venv install-deps download-binaries
 	$(call run-python-venv, pre-commit install)
 
 .PHONY: check
 check:
-	$(call run-python-venv, python -m isort --check --diff $(ISORT_ARGS) **/*.py)
-	$(call run-python-venv, black --check **/*.py)
-	$(call run-python-venv, flake8 **/*.py)
+	$(call run-python-venv, ruff check **/*.py)
 
 .PHONY: format
 format:
-	$(call run-python-venv, python -m isort **/*.py)
-	$(call run-python-venv, black **/*.py)
+	$(call run-python-venv, pre-commit run --files **/*.py)
 
 .PHONY: test
 test:
