@@ -52,6 +52,10 @@ build:
 	mkdir -p $(BUILD_ROOT)
 	python3 setup.py install --root=$(BUILD_ROOT) --prefix=/usr
 
+.PHONY: test-publish
+test-publish:
+	$(call run-python-venv, python setup.py test_upload)
+
 .PHONY: publish
 publish:
 	$(call run-python-venv, python setup.py upload)
