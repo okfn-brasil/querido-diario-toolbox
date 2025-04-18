@@ -35,7 +35,7 @@ with open(os.path.join(PROJECT_ROOT, project_slug, "__version__.py")) as f:
     exec(f.read(), about)
 
 
-class UploadCommand(Command):
+class AuxiliaryCommand(Command):
     """Apoia a publicação com o setup.py"""
 
     description = "Build and publish the package."
@@ -52,7 +52,7 @@ class UploadCommand(Command):
     def finalize_options(self):
         pass
 
-    def run(self):
+    def reset_build(self):
         try:
             self.status("Removing previous builds…")
             rmtree(os.path.join(PROJECT_ROOT, "dist"))
@@ -61,6 +61,21 @@ class UploadCommand(Command):
 
         self.status("Building Source and Wheel (universal) distribution…")
         os.system("{0} setup.py sdist bdist_wheel --universal".format(sys.executable))
+
+
+class TestUploadCommand(AuxiliaryCommand):
+    def run(self):
+        self.reset_build()
+
+        self.status("Uploading the package to TestPyPI via Twine…")
+        os.system("twine upload --repository testpypi dist/*")
+
+        sys.exit()
+
+
+class UploadCommand(AuxiliaryCommand):
+    def run(self):
+        self.reset_build()
 
         self.status("Uploading the package to PyPI via Twine…")
         os.system("twine upload dist/*")
@@ -98,5 +113,6 @@ setup(
     ],
     cmdclass={
         "upload": UploadCommand,
+        "test_upload": TestUploadCommand,
     },
 )
