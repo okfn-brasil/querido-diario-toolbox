@@ -1,4 +1,4 @@
-**English (US)** | [Português (BR)](/docs/CODE_OF_CONDUCT.md)
+**English (US)** | [Português (BR)](CODE_OF_CONDUCT.md)
 
 # Contributor Covenant Code of Conduct
 

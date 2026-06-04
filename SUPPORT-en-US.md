@@ -1,4 +1,4 @@
-**English (US)** | [Português (BR)](/docs/SUPPORT.md)
+**English (US)** | [Português (BR)](SUPPORT.md)
 
 # Support
 
