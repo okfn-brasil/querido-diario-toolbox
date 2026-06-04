@@ -1,10 +1,10 @@
 [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/querido-diario-toolbox)](https://pypi.org/project/querido-diario-toolbox/)
 [![PyPI](https://img.shields.io/pypi/v/querido-diario-toolbox)](https://pypi.org/project/querido-diario-toolbox/)
 
-**English (US)** | [Português (BR)](/docs/README.md) 
+**English (US)** | [Português (BR)](README.md)
 
 <p align="center">
-  <a href="https://queridodiario.ok.org.br/sobre" target="_blank"> <img alt="Querido Diário" src="./images/querido-diario-logo.png" width="200">
+  <a href="https://queridodiario.ok.org.br/sobre" target="_blank"> <img alt="Querido Diário" src="docs/images/querido-diario-logo.png" width="200">
   </a>
 </p>
 
@@ -14,6 +14,7 @@ Find out more about [technologies](https://queridodiario.ok.org.br/tecnologia) a
 
 # Summary
 - [How to contribute](#how-to-contribute)
+- [Architecture](#architecture)
 - [Support](#support)
 - [Thanks](#thanks)
 - [Open Knowledge Brazil](#open-knowledge-brazil)
@@ -28,9 +29,13 @@ Find out more about [technologies](https://queridodiario.ok.org.br/tecnologia) a
 
 Thank you for considering contributing to Querido Diário! :tada:
 
-You can find how to do it at [CONTRIBUTING-en-US.md](/docs/CONTRIBUTING-en-US.md)!
+You can find how to do it at [CONTRIBUTING-en-US.md](CONTRIBUTING-en-US.md)!
 
 Also, check the [Querido Diário documentation](https://docs.queridodiario.ok.org.br/en/latest/) to help you.
+
+# Architecture
+
+See [ARCHITECTURE-en-US.md](ARCHITECTURE-en-US.md) for an overview of the project structure, main modules, and execution flow.
 
 # Thanks
 This project is maintained by Open Knowledge Brazil and made possible thanks to the technical communities, the [Ambassadors of Civic Innovation](https://embaixadoras.ok.org.br/), volunteers and financial donors, in addition to partner universities, companies supporters and funders.

@@ -1,7 +1,7 @@
 [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/querido-diario-toolbox)](https://pypi.org/project/querido-diario-toolbox/)
 [![PyPI](https://img.shields.io/pypi/v/querido-diario-toolbox)](https://pypi.org/project/querido-diario-toolbox/)
 
-**Português (BR)** | [English (US)](https://github.com/okfn-brasil/querido-diario-toolbox/blob/main/docs/README-en-US.md)
+**Português (BR)** | [English (US)](README-en-US.md)
 
 <p align="center">
   <a href="https://queridodiario.ok.org.br/sobre" target="_blank"> <img alt="Querido Diário" src="https://raw.githubusercontent.com/okfn-brasil/querido-diario-toolbox/main/docs/images/querido-diario-logo.png" width="200">
@@ -16,13 +16,14 @@ A biblioteca oferece diferentes níveis de abstrações para trabalhar os dados,
 Conheça mais sobre as [tecnologias](https://queridodiario.ok.org.br/tecnologia) e a [história](https://queridodiario.ok.org.br/sobre) do projeto no [site do Querido Diário](https://queridodiario.ok.org.br)
 
 # Sumário
-- [Como contribuir](https://github.com/okfn-brasil/querido-diario-toolbox/blob/main/docs/README.md#como-contribuir)
-- [Como executar](https://github.com/okfn-brasil/querido-diario-toolbox/blob/main/docs/README.md#como-executar)
-  - [Exemplos de uso](https://github.com/okfn-brasil/querido-diario-toolbox/blob/main/docs/README.md#exemplos-de-uso)
-- [Suporte](https://github.com/okfn-brasil/querido-diario-toolbox/blob/main/docs/README.md#suporte)
-- [Agradecimentos](https://github.com/okfn-brasil/querido-diario-toolbox/blob/main/docs/README.md#agradecimentos)
-- [Open Knowledge Brasil](https://github.com/okfn-brasil/querido-diario-toolbox/blob/main/docs/README.md#open-knowledge-brasil)
-- [Licença](https://github.com/okfn-brasil/querido-diario-toolbox/blob/main/docs/README.md#licença)
+- [Como contribuir](#como-contribuir)
+- [Como executar](#como-executar)
+  - [Exemplos de uso](#exemplos-de-uso)
+- [Arquitetura](#arquitetura)
+- [Suporte](#suporte)
+- [Agradecimentos](#agradecimentos)
+- [Open Knowledge Brasil](#open-knowledge-brasil)
+- [Licença](#licença)
 
 # Como contribuir
 <p>
@@ -33,7 +34,7 @@ Conheça mais sobre as [tecnologias](https://queridodiario.ok.org.br/tecnologia)
 
 Agradecemos por considerar contribuir com o Querido Diário! :tada:
 
-Você encontra como fazê-lo no [CONTRIBUTING.md](https://github.com/okfn-brasil/querido-diario-toolbox/blob/main/docs/CONTRIBUTING.md)!
+Você encontra como fazê-lo no [CONTRIBUTING.md](CONTRIBUTING.md)!
 
 Além disso, consulte a [documentação do Querido Diário](https://docs.queridodiario.ok.org.br/pt-br/latest/) para te ajudar.
 
@@ -107,6 +108,10 @@ In [4]: extrator.extract_text(diario)
 
 Após a execução de `extrator.load_content(diario)`, dois arquivos (um `.txt` com o texto puro e um `.json` com os metadados) serão criados.
 
+
+# Arquitetura
+
+Consulte o [ARCHITECTURE.md](ARCHITECTURE.md) para entender a estrutura do projeto, os módulos principais e o fluxo de execução.
 
 # Suporte
 <p>
